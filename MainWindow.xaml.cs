@@ -25,22 +25,27 @@ namespace SpaceInvaders_WPF
 		int playerSpeed = 2;
 		int playerMomentum = 0;
 		int playerMaxMomentum = 10;
-		RotateTransform playerRotation = new RotateTransform();
+		bool readyToShoot;
+		int shotReloadValue = 4;
+		int shotReloadCount = 0;
 		
+		RotateTransform playerRotation = new RotateTransform();
+
+
 		public MainWindow()
 		{
 			InitializeComponent();
 
 			diplay.Focus();
 
-			playerRotation.CenterX = player.Width/2;
+			playerRotation.CenterX = player.Width / 2;
 			playerRotation.CenterY = player.Height;
 
 			gameTimer.Tick += GameLoop;
 			gameTimer.Interval = TimeSpan.FromMilliseconds(refreshRate);
 
 			StartGame();
-			
+
 
 		}
 
@@ -50,67 +55,105 @@ namespace SpaceInvaders_WPF
 			rightDown = false;
 			spaceDown = false;
 
+			readyToShoot = true;
+
 			gameTimer.Start();
 		}
 
 		private void GameLoop(object sender, EventArgs e)
 		{
 			HandelInputs();
-			MovePlayer();
-			RotatePlayer();
+
+			HandelPlayer();
+
+			HandelPlayerShots();
 
 			testLabel.Content = "player Momentum: " + playerMomentum + ".";
 		}
 
 		private void HandelInputs()
 		{
-			
-			if (leftDown && rightDown || !leftDown && !rightDown) { if (playerMomentum > 0) { playerMomentum --; }else if (playerMomentum < 0) { playerMomentum ++; } }
-			else if (leftDown ) { if (playerMomentum > -playerMaxMomentum ) { playerMomentum -- ; } }
-		    else if (rightDown) { if (playerMomentum < playerMaxMomentum  ) { playerMomentum ++ ; } }
-			
-			if (spaceDown) { HandelSpaceInput(); }
+
+			if (leftDown && rightDown || !leftDown && !rightDown) { if (playerMomentum > 0) { playerMomentum--; } else if (playerMomentum < 0) { playerMomentum++; } }
+			else if (leftDown) { if (playerMomentum > -playerMaxMomentum) { playerMomentum--; } }
+			else if (rightDown) { if (playerMomentum < playerMaxMomentum) { playerMomentum++; } }
+
+			if (spaceDown) { if (spaceDown && readyToShoot ){ AddPlayerShot(); } }
 
 		}
 
-		private void HandelLeftInput() 
-		{ 
-		 if (!rightDown)
-			{
-				
-				if ( playerMomentum < playerMaxMomentum ) { playerMomentum++; }
-
-
-			
-				//if (Canvas.GetLeft(player) - playerSpeed < 10) { Canvas.SetLeft(player, 10); }
-				//else 
-				//{ 
-				
-				//	//Canvas.SetLeft(player, Canvas.GetLeft(player) - playerSpeed);
-				//	RotateTransform rotateTransform1 = new RotateTransform(-5*playerMomentum);
-				//	player.RenderTransform = rotateTransform1;
-				//	//player.tr
-				
-				//}
-			}
-		
+		private void HandelPlayer()
+		{
+			MovePlayer();
+			RotatePlayer();
 		}
 
-		private void HandelRightInput() 
+		private void HandelPlayerShots()
 		{
 
-			if (!leftDown)
-			{
-				if (Canvas.GetLeft(player) + playerSpeed > 800 - player.Width - 30){ Canvas.SetLeft(player, 800 - player.Width - 30); }
-				else { Canvas.SetLeft(player, Canvas.GetLeft(player) + playerSpeed); }
-			}
+			MovePlayerShots();
+			RemoveRedundentPlayerShots();
+			UpdateReload();
+
+
 		}
 
-		private void HandelSpaceInput() 
+		private void MovePlayerShots()
 		{
-		
+			foreach (var shot in diplay.Children.OfType<Rectangle>())
+			{
+				if (shot.Tag == "playerShot") { Canvas.SetTop(shot, Canvas.GetTop(shot) - (shot.Height / 2)); }
+
+			}
+		}
+		private void RemoveRedundentPlayerShots()
+		{
+
+			for (int childIndex = diplay.Children.Count - 1; childIndex >= 0; childIndex--)
+			{
+
+				if (diplay.Children[childIndex].GetType() == typeof(Rectangle) &&
+					Canvas.GetTop(diplay.Children[childIndex] ) < - 50 )
+				{ diplay.Children.Remove(diplay.Children[childIndex]); }
+				
+			}
+
 		
 		}
+		private void UpdateReload()
+		{
+			if (shotReloadCount == 0) { readyToShoot = true; }
+			else if (shotReloadCount > 0) { shotReloadCount--; }
+			else {  Console.WriteLine("Reaload Error"); }
+
+		}
+		
+
+
+		private void AddPlayerShot()
+		{
+			Rectangle spawnShot = new Rectangle
+			{
+
+				Width = 10,
+				Height = 30,
+				Fill = Brushes.Red,
+				StrokeThickness = 3,
+				Stroke = Brushes.Black,
+				Tag = "playerShot"
+
+			};
+
+			Canvas.SetLeft(spawnShot,Canvas.GetLeft(player) + (spawnShot.Width/2) );
+			Canvas.SetTop(spawnShot, Canvas.GetTop(player) - spawnShot.Height);
+
+			diplay.Children.Add(spawnShot);
+			shotReloadCount = shotReloadValue;
+			readyToShoot = false;
+
+		}
+
+
 
 		private void MovePlayer()
 		{
@@ -119,8 +162,8 @@ namespace SpaceInvaders_WPF
 			{
 				double nextPlayerLeft = Canvas.GetLeft(player) + (playerSpeed * playerMomentum);
 
-				if (nextPlayerLeft < 5) { Canvas.SetLeft(player, 5); }
-				else if (nextPlayerLeft > 730) { Canvas.SetLeft(player, 730); }
+				if (nextPlayerLeft < 25) { Canvas.SetLeft(player, 25); }
+				else if (nextPlayerLeft > 710) { Canvas.SetLeft(player, 710); }
 				else { Canvas.SetLeft(player, nextPlayerLeft); }
 
 			}
@@ -152,5 +195,10 @@ namespace SpaceInvaders_WPF
 			if (e.Key == Key.Space) { spaceDown = false; }
 
 		}
+	
+	
+	
 	}
+
+
 }
