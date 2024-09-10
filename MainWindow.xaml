@@ -9,6 +9,7 @@
 
     <Canvas Name="diplay" Background="LightBlue" Focusable="True" KeyDown="KeyDownEvent" KeyUp="KeyUpEvent">
 
+        <Label Name="testLabel" Content="Player Momenum:" />
         <Rectangle Name="player" Fill="Black" Height="50" Width="50" Canvas.Left="380" Canvas.Top="350" />
 
     </Canvas>

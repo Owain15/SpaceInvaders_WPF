@@ -22,14 +22,19 @@ namespace SpaceInvaders_WPF
 
 		bool leftDown, rightDown, spaceDown;
 
-		int playerSpeed = 10;
+		int playerSpeed = 2;
 		int playerMomentum = 0;
+		int playerMaxMomentum = 10;
+		RotateTransform playerRotation = new RotateTransform();
 		
 		public MainWindow()
 		{
 			InitializeComponent();
 
 			diplay.Focus();
+
+			playerRotation.CenterX = player.Width/2;
+			playerRotation.CenterY = player.Height;
 
 			gameTimer.Tick += GameLoop;
 			gameTimer.Interval = TimeSpan.FromMilliseconds(refreshRate);
@@ -51,22 +56,42 @@ namespace SpaceInvaders_WPF
 		private void GameLoop(object sender, EventArgs e)
 		{
 			HandelInputs();
+			MovePlayer();
+			RotatePlayer();
 
+			testLabel.Content = "player Momentum: " + playerMomentum + ".";
 		}
 
 		private void HandelInputs()
 		{
-			if (leftDown ) { HandelLeftInput();  }
-			if (rightDown) { HandelRightInput(); }
+			
+			if (leftDown && rightDown || !leftDown && !rightDown) { if (playerMomentum > 0) { playerMomentum --; }else if (playerMomentum < 0) { playerMomentum ++; } }
+			else if (leftDown ) { if (playerMomentum > -playerMaxMomentum ) { playerMomentum -- ; } }
+		    else if (rightDown) { if (playerMomentum < playerMaxMomentum  ) { playerMomentum ++ ; } }
+			
 			if (spaceDown) { HandelSpaceInput(); }
+
 		}
 
 		private void HandelLeftInput() 
 		{ 
 		 if (!rightDown)
 			{
-				if (Canvas.GetLeft(player) - playerSpeed < 10) { Canvas.SetLeft(player, 10); }
-				else { Canvas.SetLeft(player, Canvas.GetLeft(player) - playerSpeed); }
+				
+				if ( playerMomentum < playerMaxMomentum ) { playerMomentum++; }
+
+
+			
+				//if (Canvas.GetLeft(player) - playerSpeed < 10) { Canvas.SetLeft(player, 10); }
+				//else 
+				//{ 
+				
+				//	//Canvas.SetLeft(player, Canvas.GetLeft(player) - playerSpeed);
+				//	RotateTransform rotateTransform1 = new RotateTransform(-5*playerMomentum);
+				//	player.RenderTransform = rotateTransform1;
+				//	//player.tr
+				
+				//}
 			}
 		
 		}
@@ -76,8 +101,7 @@ namespace SpaceInvaders_WPF
 
 			if (!leftDown)
 			{
-				if (Canvas.GetLeft(player) + playerSpeed > 800 - player.Width - 30)
-				{ Canvas.SetLeft(player, 800 - player.Width - 30); }
+				if (Canvas.GetLeft(player) + playerSpeed > 800 - player.Width - 30){ Canvas.SetLeft(player, 800 - player.Width - 30); }
 				else { Canvas.SetLeft(player, Canvas.GetLeft(player) + playerSpeed); }
 			}
 		}
@@ -87,6 +111,31 @@ namespace SpaceInvaders_WPF
 		
 		
 		}
+
+		private void MovePlayer()
+		{
+
+			if (playerMomentum != 0)
+			{
+				double nextPlayerLeft = Canvas.GetLeft(player) + (playerSpeed * playerMomentum);
+
+				if (nextPlayerLeft < 5) { Canvas.SetLeft(player, 5); }
+				else if (nextPlayerLeft > 730) { Canvas.SetLeft(player, 730); }
+				else { Canvas.SetLeft(player, nextPlayerLeft); }
+
+			}
+		}
+
+		private void RotatePlayer()
+		{
+			playerRotation.Angle = playerMomentum * 3;
+			player.RenderTransform = playerRotation;
+
+		}
+
+
+
+
 
 		private void KeyDownEvent(object sender, KeyEventArgs e)
 		{
