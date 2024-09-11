@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Numerics;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -6,6 +8,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
@@ -30,11 +33,13 @@ namespace SpaceInvaders_WPF
 		int shotReloadCount = 0;
 		
 		RotateTransform playerRotation = new RotateTransform();
-
-
 		public MainWindow()
 		{
 			InitializeComponent();
+
+			//ImageBrush playerSprite = new ImageBrush();
+			//playerSprite.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\Player.png"));
+			//player.Fill = playerSprite;
 
 			diplay.Focus();
 
@@ -68,6 +73,8 @@ namespace SpaceInvaders_WPF
 
 			HandelPlayerShots();
 
+			HandelCollistions();
+
 			testLabel.Content = "player Momentum: " + playerMomentum + ".";
 		}
 
@@ -78,7 +85,8 @@ namespace SpaceInvaders_WPF
 			else if (leftDown) { if (playerMomentum > -playerMaxMomentum) { playerMomentum--; } }
 			else if (rightDown) { if (playerMomentum < playerMaxMomentum) { playerMomentum++; } }
 
-			if (spaceDown) { if (spaceDown && readyToShoot ){ AddPlayerShot(); } }
+			if (spaceDown) 
+			{ if (spaceDown && readyToShoot ){ AddPlayerShot(); } }
 
 		}
 
@@ -97,6 +105,46 @@ namespace SpaceInvaders_WPF
 
 
 		}
+
+		private void HandelCollistions()
+		{
+			List<Rectangle> reliventRectangels = diplay.Children.OfType<Rectangle>().ToList();
+
+			for (int rectangleIndex = reliventRectangels.Count - 1; rectangleIndex >= 0; rectangleIndex--)
+			{
+				
+
+				if (reliventRectangels[rectangleIndex].Tag == "playerShot")
+				{
+					Rect shotHitbox = new Rect(Canvas.GetLeft(reliventRectangels[rectangleIndex]), Canvas.GetTop(reliventRectangels[rectangleIndex]),
+						reliventRectangels[rectangleIndex].Width, reliventRectangels[rectangleIndex].Height);
+
+					for (int checkRectangleIndex = reliventRectangels.Count - 1; checkRectangleIndex >= 0; checkRectangleIndex--)
+					{
+						if ((string)reliventRectangels[checkRectangleIndex].Tag == "defnceBlock")
+						{
+							Rect targetHitbox = new Rect(Canvas.GetLeft(reliventRectangels[checkRectangleIndex]), Canvas.GetTop(reliventRectangels[checkRectangleIndex]),
+							reliventRectangels[checkRectangleIndex].Width, reliventRectangels[checkRectangleIndex].Height);
+
+
+							if (shotHitbox.IntersectsWith(targetHitbox))
+							{
+								diplay.Children.Remove(reliventRectangels[rectangleIndex]);
+								diplay.Children.Remove(reliventRectangels[checkRectangleIndex]);
+							}
+						}
+					}
+
+					
+				}
+
+			}
+
+
+		}
+
+
+
 
 		private void MovePlayerShots()
 		{
