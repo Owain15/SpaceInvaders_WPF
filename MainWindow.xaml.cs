@@ -32,16 +32,34 @@ namespace SpaceInvaders_WPF
 		int shotReloadValue = 4;
 		int shotReloadCount = 0;
 		
+		ImageBrush backgroundImage = new ImageBrush();
+		ImageBrush playerImage = new ImageBrush();
+		ImageBrush defenceBlockBrush = new ImageBrush();
+
+		
 		RotateTransform playerRotation = new RotateTransform();
 		public MainWindow()
 		{
 			InitializeComponent();
 
-			//ImageBrush playerSprite = new ImageBrush();
-			//playerSprite.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\Player.png"));
-			//player.Fill = playerSprite;
+			
+			backgroundImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\background.png"));
+			backgroud.Fill = backgroundImage;
 
-			diplay.Focus();
+			
+			playerImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\Player\\playerMo1.png"));
+			player.Fill = playerImage;
+
+			
+			defenceBlockBrush.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\block.png"));
+
+			foreach (var block in display.Children.OfType<Rectangle>())
+			{
+				if (block.Tag == "defnceBlock")
+				{ block.Fill = defenceBlockBrush; }
+			}
+
+			display.Focus();
 
 			playerRotation.CenterX = player.Width / 2;
 			playerRotation.CenterY = player.Height;
@@ -100,6 +118,7 @@ namespace SpaceInvaders_WPF
 		{
 
 			MovePlayerShots();
+			UpdatePlayerImage();
 			RemoveRedundentPlayerShots();
 			UpdateReload();
 
@@ -108,7 +127,7 @@ namespace SpaceInvaders_WPF
 
 		private void HandelCollistions()
 		{
-			List<Rectangle> reliventRectangels = diplay.Children.OfType<Rectangle>().ToList();
+			List<Rectangle> reliventRectangels = display.Children.OfType<Rectangle>().ToList();
 
 			for (int rectangleIndex = reliventRectangels.Count - 1; rectangleIndex >= 0; rectangleIndex--)
 			{
@@ -129,8 +148,8 @@ namespace SpaceInvaders_WPF
 
 							if (shotHitbox.IntersectsWith(targetHitbox))
 							{
-								diplay.Children.Remove(reliventRectangels[rectangleIndex]);
-								diplay.Children.Remove(reliventRectangels[checkRectangleIndex]);
+								display.Children.Remove(reliventRectangels[rectangleIndex]);
+								display.Children.Remove(reliventRectangels[checkRectangleIndex]);
 							}
 						}
 					}
@@ -148,21 +167,38 @@ namespace SpaceInvaders_WPF
 
 		private void MovePlayerShots()
 		{
-			foreach (var shot in diplay.Children.OfType<Rectangle>())
+			foreach (var shot in display.Children.OfType<Rectangle>())
 			{
 				if (shot.Tag == "playerShot") { Canvas.SetTop(shot, Canvas.GetTop(shot) - (shot.Height / 2)); }
 
 			}
 		}
+
+		private void UpdatePlayerImage()
+		{
+			if (playerMomentum == 0)
+			{
+				playerImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\Player\\playerMo1.png"));
+			}
+			else if (playerMomentum > 5 || playerMomentum > -5)
+			{
+				playerImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\Player\\playerMo2.png"));
+			}
+			else if ( playerMomentum > 8 || playerMomentum < -8 )
+			{
+				playerImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\Player\\playerMo3.png"));
+			}
+		}
+
 		private void RemoveRedundentPlayerShots()
 		{
 
-			for (int childIndex = diplay.Children.Count - 1; childIndex >= 0; childIndex--)
+			for (int childIndex = display.Children.Count - 1; childIndex >= 0; childIndex--)
 			{
 
-				if (diplay.Children[childIndex].GetType() == typeof(Rectangle) &&
-					Canvas.GetTop(diplay.Children[childIndex] ) < - 50 )
-				{ diplay.Children.Remove(diplay.Children[childIndex]); }
+				if (display.Children[childIndex].GetType() == typeof(Rectangle) &&
+					Canvas.GetTop(display.Children[childIndex] ) < - 50 )
+				{ display.Children.Remove(display.Children[childIndex]); }
 				
 			}
 
@@ -195,7 +231,7 @@ namespace SpaceInvaders_WPF
 			Canvas.SetLeft(spawnShot,Canvas.GetLeft(player) + (spawnShot.Width/2) );
 			Canvas.SetTop(spawnShot, Canvas.GetTop(player) - spawnShot.Height);
 
-			diplay.Children.Add(spawnShot);
+			display.Children.Add(spawnShot);
 			shotReloadCount = shotReloadValue;
 			readyToShoot = false;
 

@@ -7,12 +7,20 @@
         mc:Ignorable="d"
         Title="SpaceInvaders" Height="450" Width="800" >
 
-    <Canvas Name="diplay" Background="LightBlue" Focusable="True" KeyDown="KeyDownEvent" KeyUp="KeyUpEvent">
+    <Canvas Name="display" Background="Black" Focusable="True" KeyDown="KeyDownEvent" KeyUp="KeyUpEvent">
+      
+        <Rectangle Name="backgroud" Fill="LightBlue" Height="450" Width="800" Canvas.Left="0" Canvas.Top="0" />
 
         <Label Name="testLabel" Content="Player Momenum:" />
+
         <Rectangle Name="player" Fill="Black" Height="50" Width="50" Canvas.Left="380" Canvas.Top="340" />
-        <Rectangle Tag="defnceBlock" Fill="Brown" Height="50" Width="200" Canvas.Left="300" Canvas.Top="140" />
-        <Rectangle Tag="defnceBlock" Fill="Brown" Height="50" Width="200" Canvas.Left="300" Canvas.Top="200" />
+
+        <Rectangle Tag="defnceBlock" Fill="Brown" Height="15" Width="15" Canvas.Left="300" Canvas.Top="140" />
+        <Rectangle Tag="defnceBlock" Fill="Brown" Height="15" Width="15" Canvas.Left="300" Canvas.Top="200" />
+
+
+
+
 
 
     </Canvas>
