@@ -53,7 +53,7 @@ namespace SpaceInvaders_WPF
 			
 			defenceBlockBrush.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\block.png"));
 
-			foreach (var block in display.Children.OfType<Rectangle>())
+			foreach (var block in display.Children.OfType<Rectangle>().ToList())
 			{
 				if (block.Tag == "defnceBlock")
 				{ block.Fill = defenceBlockBrush; }
@@ -180,7 +180,7 @@ namespace SpaceInvaders_WPF
 			{
 				playerImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\Player\\playerMo1.png"));
 			}
-			else if (playerMomentum > 5 || playerMomentum > -5)
+			else if (playerMomentum > 0 && playerMomentum < 8 || playerMomentum < 0 &&playerMomentum > -8)
 			{
 				playerImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\Player\\playerMo2.png"));
 			}
@@ -228,8 +228,8 @@ namespace SpaceInvaders_WPF
 
 			};
 
-			Canvas.SetLeft(spawnShot,Canvas.GetLeft(player) + (spawnShot.Width/2) );
-			Canvas.SetTop(spawnShot, Canvas.GetTop(player) - spawnShot.Height);
+			Canvas.SetLeft(spawnShot,Canvas.GetLeft(player) +(player.Width/2) - (spawnShot.Width/2)  );
+			Canvas.SetTop(spawnShot, Canvas.GetTop(player) - spawnShot.Height + 20);
 
 			display.Children.Add(spawnShot);
 			shotReloadCount = shotReloadValue;

@@ -11,11 +11,12 @@
       
         <Rectangle Name="backgroud" Fill="LightBlue" Height="450" Width="800" Canvas.Left="0" Canvas.Top="0" />
 
-        <Label Name="testLabel" Content="Player Momenum:" />
+        <Label Name="testLabel" Content="Player Momenum:" Foreground="White" />
 
         <Rectangle Name="player" Fill="Black" Height="50" Width="50" Canvas.Left="380" Canvas.Top="340" />
 
-        <Rectangle Tag="defnceBlock" Fill="Brown" Height="15" Width="15" Canvas.Left="300" Canvas.Top="140" />
+       
+        <Rectangle Tag="defnceBlock" Fill= "LightGreen" Height="15" Width="15" Canvas.Left="300" Canvas.Top="140" />
         <Rectangle Tag="defnceBlock" Fill="Brown" Height="15" Width="15" Canvas.Left="300" Canvas.Top="200" />
 
 
