@@ -32,10 +32,13 @@ namespace SpaceInvaders_WPF
 		int shotReloadValue = 4;
 		int shotReloadCount = 0;
 
+		int playerShotImageDelay = 0;
+
 		List<Point> defenceBlockData;
 
 		ImageBrush backgroundImage = new ImageBrush();
 		ImageBrush playerImage = new ImageBrush();
+		ImageBrush playerShotImage = new ImageBrush();
 		//ImageBrush defenceBlockBrush = new ImageBrush();
 
 		
@@ -109,14 +112,16 @@ namespace SpaceInvaders_WPF
 		{
 			MovePlayer();
 			RotatePlayer();
+			UpdatePlayerImage();
 		}
 
 		private void HandelPlayerShots()
 		{
 
 			MovePlayerShots();
-			UpdatePlayerImage();
+			
 			RemoveRedundentPlayerShots();
+			UpdatePlayerShotImage();
 			UpdateReload();
 
 
@@ -213,14 +218,15 @@ namespace SpaceInvaders_WPF
 
 		private void AddPlayerShot()
 		{
+			GetRandomPlayerShotImage();
+
 			Rectangle spawnShot = new Rectangle
 			{
 
 				Width = 10,
 				Height = 30,
-				Fill = Brushes.Red,
-				StrokeThickness = 3,
-				Stroke = Brushes.Black,
+				Fill = playerShotImage,
+				
 				Tag = "playerShot"
 
 			};
@@ -346,6 +352,46 @@ namespace SpaceInvaders_WPF
 			
 
 
+		}
+
+		private void GetRandomPlayerShotImage()
+		{
+
+			Random rand = new Random();
+		
+		    switch (rand.Next(1,4))
+			{
+				case 1: playerShotImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\PlayerShot\\PlayerShot01.png")); break;
+				case 2: playerShotImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\PlayerShot\\PlayerShot02.png")); break;
+				case 3: playerShotImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\PlayerShot\\PlayerShot03.png")); break;
+				case 4: playerShotImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\PlayerShot\\PlayerShot04.png")); break;
+
+				default: playerShotImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\PlayerShot\\PlayerShot01.png")); break;
+			}
+
+		}
+
+		private void UpdatePlayerShotImage()
+		{
+			playerShotImageDelay++;
+
+			if(playerShotImageDelay>2)
+			{
+				playerShotImageDelay = 0;
+
+				List<Rectangle> reliventRectangels = display.Children.OfType<Rectangle>().ToList();
+				for (int i = 0; i < reliventRectangels.Count; i++)
+				{ 
+					if(reliventRectangels[i].Tag == "playerShot")
+					{
+						GetRandomPlayerShotImage();
+						reliventRectangels[i].Fill = playerShotImage;
+					}
+			
+				}
+
+			}
+			
 		}
 
 

@@ -13,7 +13,7 @@
 
         <Label Name="testLabel" Content="Player Momenum:" Foreground="White" />
 
-        <Rectangle Name="player" Fill="Black" Height="50" Width="50" Canvas.Left="380" Canvas.Top="340" />
+        <Rectangle Name="player" Fill="Black" Height="50" Width="50" Canvas.Left="380" Canvas.Top="350" />
 
        
         <!--<Rectangle Tag="defnceBlock" Fill= "LightGreen" Height="15" Width="15" Canvas.Left="300" Canvas.Top="140" />
