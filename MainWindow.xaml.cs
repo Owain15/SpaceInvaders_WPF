@@ -31,10 +31,12 @@ namespace SpaceInvaders_WPF
 		bool readyToShoot;
 		int shotReloadValue = 4;
 		int shotReloadCount = 0;
-		
+
+		List<Point> defenceBlockData;
+
 		ImageBrush backgroundImage = new ImageBrush();
 		ImageBrush playerImage = new ImageBrush();
-		ImageBrush defenceBlockBrush = new ImageBrush();
+		//ImageBrush defenceBlockBrush = new ImageBrush();
 
 		
 		RotateTransform playerRotation = new RotateTransform();
@@ -50,14 +52,9 @@ namespace SpaceInvaders_WPF
 			playerImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\Player\\playerMo1.png"));
 			player.Fill = playerImage;
 
+			defenceBlockData = new List<Point>();
+			InitializeDefenceBlocks();
 			
-			defenceBlockBrush.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\block.png"));
-
-			foreach (var block in display.Children.OfType<Rectangle>().ToList())
-			{
-				if (block.Tag == "defnceBlock")
-				{ block.Fill = defenceBlockBrush; }
-			}
 
 			display.Focus();
 
@@ -140,7 +137,7 @@ namespace SpaceInvaders_WPF
 
 					for (int checkRectangleIndex = reliventRectangels.Count - 1; checkRectangleIndex >= 0; checkRectangleIndex--)
 					{
-						if ((string)reliventRectangels[checkRectangleIndex].Tag == "defnceBlock")
+						if ((string)reliventRectangels[checkRectangleIndex].Tag == "defenceBlock")
 						{
 							Rect targetHitbox = new Rect(Canvas.GetLeft(reliventRectangels[checkRectangleIndex]), Canvas.GetTop(reliventRectangels[checkRectangleIndex]),
 							reliventRectangels[checkRectangleIndex].Width, reliventRectangels[checkRectangleIndex].Height);
@@ -176,11 +173,11 @@ namespace SpaceInvaders_WPF
 
 		private void UpdatePlayerImage()
 		{
-			if (playerMomentum == 0)
+			if (playerMomentum > -2 && playerMomentum < 2)
 			{
 				playerImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\Player\\playerMo1.png"));
 			}
-			else if (playerMomentum > 0 && playerMomentum < 8 || playerMomentum < 0 &&playerMomentum > -8)
+			else if (playerMomentum > 3 && playerMomentum < 8 || playerMomentum < 3 &&playerMomentum > -8)
 			{
 				playerImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\Player\\playerMo2.png"));
 			}
@@ -279,9 +276,79 @@ namespace SpaceInvaders_WPF
 			if (e.Key == Key.Space) { spaceDown = false; }
 
 		}
-	
-	
-	
+
+
+
+
+
+		private void AddDefenceBlock(double positionLeft, double positionTop)
+		{
+
+			ImageBrush defenceBlockBrush = new ImageBrush();
+			defenceBlockBrush.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\block.png"));
+
+			Rectangle defenceBlock = new Rectangle
+			{
+
+				Width = 15,
+				Height = 15,
+				Fill = defenceBlockBrush,
+				Tag = "defenceBlock"
+
+			};
+
+			Canvas.SetLeft(defenceBlock, positionLeft);
+			Canvas.SetTop(defenceBlock, positionTop);
+
+			display.Children.Add(defenceBlock);
+		}
+
+		private void AddDefenceBlockGroup(double positionLeft, double positionTop)
+		{
+			
+			defenceBlockData.Add(new Point(positionLeft     , positionTop + 20));
+			defenceBlockData.Add(new Point(positionLeft + 20, positionTop + 20));
+
+			defenceBlockData.Add(new Point(positionLeft     , positionTop + 40));
+			defenceBlockData.Add(new Point(positionLeft + 20, positionTop + 40));
+
+			defenceBlockData.Add(new Point(positionLeft + 20, positionTop));
+			defenceBlockData.Add(new Point(positionLeft + 40, positionTop));
+			defenceBlockData.Add(new Point(positionLeft + 60, positionTop));
+
+			defenceBlockData.Add(new Point(positionLeft + 40, positionTop + 20));
+
+			defenceBlockData.Add(new Point(positionLeft + 60, positionTop + 20));
+			defenceBlockData.Add(new Point(positionLeft + 80, positionTop + 20));
+
+			defenceBlockData.Add(new Point(positionLeft + 60, positionTop + 40));
+			defenceBlockData.Add(new Point(positionLeft + 80, positionTop + 40));
+		}
+
+
+
+
+		private void InitializeDefenceBlocks() 
+		{
+			AddDefenceBlockGroup(70, 280);
+			AddDefenceBlockGroup(260, 280);
+			AddDefenceBlockGroup(440, 280);
+			AddDefenceBlockGroup(620, 280);
+
+			foreach (var point in defenceBlockData)
+			{
+				AddDefenceBlock(point.X,point.Y);
+			}
+			
+
+
+			
+			
+
+
+		}
+
+
 	}
 
 
