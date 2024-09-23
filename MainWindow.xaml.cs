@@ -35,11 +35,13 @@ namespace SpaceInvaders_WPF
 		int playerShotImageDelay = 0;
 
 		List<Point> defenceBlockData;
+		List<Point> enemyPosition;
+		double enemyMove;
 
 		ImageBrush backgroundImage = new ImageBrush();
 		ImageBrush playerImage = new ImageBrush();
 		ImageBrush playerShotImage = new ImageBrush();
-		//ImageBrush defenceBlockBrush = new ImageBrush();
+		ImageBrush defenceBlockBrush = new ImageBrush();
 
 		
 		RotateTransform playerRotation = new RotateTransform();
@@ -47,28 +49,22 @@ namespace SpaceInvaders_WPF
 		{
 			InitializeComponent();
 
-			
-			backgroundImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\background.png"));
-			backgroud.Fill = backgroundImage;
+			InitializeBackground();
 
+			InitializePlayer();
 			
-			playerImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\Player\\playerMo1.png"));
-			player.Fill = playerImage;
-
-			defenceBlockData = new List<Point>();
 			InitializeDefenceBlocks();
-			
+
+			InitializeEnemys();
+
+
 
 			display.Focus();
-
-			playerRotation.CenterX = player.Width / 2;
-			playerRotation.CenterY = player.Height;
-
+		
 			gameTimer.Tick += GameLoop;
 			gameTimer.Interval = TimeSpan.FromMilliseconds(refreshRate);
 
 			StartGame();
-
 
 		}
 
@@ -88,6 +84,8 @@ namespace SpaceInvaders_WPF
 			HandelInputs();
 
 			HandelPlayer();
+
+			HandelEnemys();
 
 			HandelPlayerShots();
 
@@ -113,6 +111,23 @@ namespace SpaceInvaders_WPF
 			MovePlayer();
 			RotatePlayer();
 			UpdatePlayerImage();
+		}
+
+		private void HandelEnemys()
+		{
+			List<Rectangle> enemyShips = display.Children.OfType<Rectangle>().Where(x => x.Tag == "enemy").ToList();
+
+			foreach (Rectangle rectangle in enemyShips)
+			{
+				double left = Canvas.GetLeft(rectangle);
+				
+				if (left < 50) { enemyMove = 10; }
+                else if ( left > 700){ enemyMove = -10; }
+               
+
+                Canvas.SetLeft(rectangle,left + enemyMove);
+			}
+
 		}
 
 		private void HandelPlayerShots()
@@ -142,7 +157,8 @@ namespace SpaceInvaders_WPF
 
 					for (int checkRectangleIndex = reliventRectangels.Count - 1; checkRectangleIndex >= 0; checkRectangleIndex--)
 					{
-						if ((string)reliventRectangels[checkRectangleIndex].Tag == "defenceBlock")
+						if ((string)reliventRectangels[checkRectangleIndex].Tag == "defenceBlock"||
+							(string)reliventRectangels[checkRectangleIndex].Tag == "enemy")
 						{
 							Rect targetHitbox = new Rect(Canvas.GetLeft(reliventRectangels[checkRectangleIndex]), Canvas.GetTop(reliventRectangels[checkRectangleIndex]),
 							reliventRectangels[checkRectangleIndex].Width, reliventRectangels[checkRectangleIndex].Height);
@@ -231,8 +247,8 @@ namespace SpaceInvaders_WPF
 
 			};
 
-			Canvas.SetLeft(spawnShot,Canvas.GetLeft(player) +(player.Width/2) - (spawnShot.Width/2)  );
-			Canvas.SetTop(spawnShot, Canvas.GetTop(player) - spawnShot.Height + 20);
+			Canvas.SetLeft(spawnShot,Canvas.GetLeft(display.Children.OfType<Rectangle>().First(x => x.Tag == "player")) +(display.Children.OfType<Rectangle>().First(x => x.Tag == "player").Width/2) - (spawnShot.Width/2)  );
+			Canvas.SetTop(spawnShot, Canvas.GetTop(display.Children.OfType<Rectangle>().First(x => x.Tag == "player")) - spawnShot.Height + 20);
 
 			display.Children.Add(spawnShot);
 			shotReloadCount = shotReloadValue;
@@ -247,11 +263,11 @@ namespace SpaceInvaders_WPF
 
 			if (playerMomentum != 0)
 			{
-				double nextPlayerLeft = Canvas.GetLeft(player) + (playerSpeed * playerMomentum);
+				double nextPlayerLeft = Canvas.GetLeft(display.Children.OfType<Rectangle>().First(x => x.Tag == "player")) + (playerSpeed * playerMomentum);
 
-				if (nextPlayerLeft < 25) { Canvas.SetLeft(player, 25); }
-				else if (nextPlayerLeft > 710) { Canvas.SetLeft(player, 710); }
-				else { Canvas.SetLeft(player, nextPlayerLeft); }
+				if (nextPlayerLeft < 25) { Canvas.SetLeft(display.Children.OfType<Rectangle>().First(x => x.Tag == "player"), 25); }
+				else if (nextPlayerLeft > 710) { Canvas.SetLeft(display.Children.OfType<Rectangle>().First(x => x.Tag == "player"), 710); }
+				else { Canvas.SetLeft(display.Children.OfType<Rectangle>().First(x => x.Tag == "player"), nextPlayerLeft); }
 
 			}
 		}
@@ -259,7 +275,7 @@ namespace SpaceInvaders_WPF
 		private void RotatePlayer()
 		{
 			playerRotation.Angle = playerMomentum * 3;
-			player.RenderTransform = playerRotation;
+			display.Children.OfType<Rectangle>().First(x => x.Tag == "player").RenderTransform = playerRotation;
 
 		}
 
@@ -290,7 +306,7 @@ namespace SpaceInvaders_WPF
 		private void AddDefenceBlock(double positionLeft, double positionTop)
 		{
 
-			ImageBrush defenceBlockBrush = new ImageBrush();
+			//ImageBrush defenceBlockBrush = new ImageBrush();
 			defenceBlockBrush.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\block.png"));
 
 			Rectangle defenceBlock = new Rectangle
@@ -333,9 +349,59 @@ namespace SpaceInvaders_WPF
 
 
 
+		private void InitializeBackground()
+		{
+			
+
+			backgroundImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\background.png"));
+			
+
+			Rectangle backgroud = new Rectangle
+			{
+
+				Width = 800,
+				Height = 450,
+				Fill = backgroundImage,
+				Tag = "background"
+
+			};
+
+			Canvas.SetLeft(backgroud, 0);
+			Canvas.SetTop(backgroud, 0);
+
+			display.Children.Add(backgroud);
+		}
+	
+		private void InitializePlayer()
+		{
+
+			playerImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\Player\\playerMo1.png"));
+
+			Rectangle player = new Rectangle
+			{
+
+				Width = 50,
+				Height = 50,
+				Fill = playerImage,
+				Tag = "player"
+
+			};
+			
+			Canvas.SetLeft(player, 380);
+			Canvas.SetTop(player, 350);
+
+			display.Children.Add(player);
+			
+			playerRotation.CenterX = display.Children.OfType<Rectangle>().First(x => x.Tag == "player").Width / 2;
+			playerRotation.CenterY = display.Children.OfType<Rectangle>().First(x => x.Tag == "player").Height;
+		
+		}
 
 		private void InitializeDefenceBlocks() 
 		{
+
+			defenceBlockData = new List<Point>();
+
 			AddDefenceBlockGroup(70, 280);
 			AddDefenceBlockGroup(260, 280);
 			AddDefenceBlockGroup(440, 280);
@@ -346,13 +412,37 @@ namespace SpaceInvaders_WPF
 				AddDefenceBlock(point.X,point.Y);
 			}
 			
-
-
-			
-			
-
-
 		}
+
+		private void InitializeEnemys()
+		{
+			enemyMove = 10;
+
+			enemyPosition = new List<Point>();
+
+			enemyPosition.Add(new Point(100, 100));
+			enemyPosition.Add(new Point(200, 100));
+
+
+			foreach (var point in enemyPosition)
+			{
+				Rectangle enemy = new Rectangle
+				{
+					Height = 50,
+					Width = 50,
+					Fill = Brushes.Red,
+					Tag = "enemy"
+				};
+
+				Canvas.SetLeft(enemy, point.X);
+				Canvas.SetTop(enemy, point.Y);
+
+				display.Children.Add(enemy);
+
+
+			}
+		}
+
 
 		private void GetRandomPlayerShotImage()
 		{
