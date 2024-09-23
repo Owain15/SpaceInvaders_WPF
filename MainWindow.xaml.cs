@@ -23,466 +23,466 @@ namespace SpaceInvaders_WPF
 		int refreshRate = 20;
 		DispatcherTimer gameTimer = new DispatcherTimer();
 
-		bool leftDown, rightDown, spaceDown;
+		//bool leftDown, rightDown, spaceDown;
 
-		int playerSpeed = 2;
-		int playerMomentum = 0;
-		int playerMaxMomentum = 10;
-		bool readyToShoot;
-		int shotReloadValue = 4;
-		int shotReloadCount = 0;
+		//int playerSpeed = 2;
+		//int playerMomentum = 0;
+		//int playerMaxMomentum = 10;
+		//bool readyToShoot;
+		//int shotReloadValue = 4;
+		//int shotReloadCount = 0;
 
-		int playerShotImageDelay = 0;
+		//int playerShotImageDelay = 0;
 
-		List<Point> defenceBlockData;
-		List<Point> enemyPosition;
-		double enemyMove;
+		//List<Point> defenceBlockData;
+		//List<Point> enemyPosition;
+		//double enemyMove;
 
-		ImageBrush backgroundImage = new ImageBrush();
-		ImageBrush playerImage = new ImageBrush();
-		ImageBrush playerShotImage = new ImageBrush();
-		ImageBrush defenceBlockBrush = new ImageBrush();
+		//ImageBrush backgroundImage = new ImageBrush();
+		//ImageBrush playerImage = new ImageBrush();
+		//ImageBrush playerShotImage = new ImageBrush();
+		//ImageBrush defenceBlockBrush = new ImageBrush();
 
 		
-		RotateTransform playerRotation = new RotateTransform();
+		//RotateTransform playerRotation = new RotateTransform();
 		public MainWindow()
 		{
 			InitializeComponent();
 
-			InitializeBackground();
+		//	InitializeBackground();
 
-			InitializePlayer();
+		//	InitializePlayer();
 			
-			InitializeDefenceBlocks();
+		//	InitializeDefenceBlocks();
 
-			InitializeEnemys();
+		//	InitializeEnemys();
 
 
 
-			display.Focus();
+		//	display.Focus();
 		
-			gameTimer.Tick += GameLoop;
-			gameTimer.Interval = TimeSpan.FromMilliseconds(refreshRate);
+		//	gameTimer.Tick += GameLoop;
+		//	gameTimer.Interval = TimeSpan.FromMilliseconds(refreshRate);
 
-			StartGame();
-
-		}
-
-		private void StartGame()
-		{
-			leftDown = false;
-			rightDown = false;
-			spaceDown = false;
-
-			readyToShoot = true;
-
-			gameTimer.Start();
-		}
-
-		private void GameLoop(object sender, EventArgs e)
-		{
-			HandelInputs();
-
-			HandelPlayer();
-
-			HandelEnemys();
-
-			HandelPlayerShots();
-
-			HandelCollistions();
-
-			testLabel.Content = "player Momentum: " + playerMomentum + ".";
-		}
-
-		private void HandelInputs()
-		{
-
-			if (leftDown && rightDown || !leftDown && !rightDown) { if (playerMomentum > 0) { playerMomentum--; } else if (playerMomentum < 0) { playerMomentum++; } }
-			else if (leftDown) { if (playerMomentum > -playerMaxMomentum) { playerMomentum--; } }
-			else if (rightDown) { if (playerMomentum < playerMaxMomentum) { playerMomentum++; } }
-
-			if (spaceDown) 
-			{ if (spaceDown && readyToShoot ){ AddPlayerShot(); } }
+		//	StartGame();
 
 		}
 
-		private void HandelPlayer()
-		{
-			MovePlayer();
-			RotatePlayer();
-			UpdatePlayerImage();
-		}
+		//private void StartGame()
+		//{
+		//	leftDown = false;
+		//	rightDown = false;
+		//	spaceDown = false;
 
-		private void HandelEnemys()
-		{
-			List<Rectangle> enemyShips = display.Children.OfType<Rectangle>().Where(x => x.Tag == "enemy").ToList();
+		//	readyToShoot = true;
 
-			foreach (Rectangle rectangle in enemyShips)
-			{
-				double left = Canvas.GetLeft(rectangle);
+		//	gameTimer.Start();
+		//}
+
+		//private void GameLoop(object sender, EventArgs e)
+		//{
+		//	HandelInputs();
+
+		//	HandelPlayer();
+
+		//	HandelEnemys();
+
+		//	HandelPlayerShots();
+
+		//	HandelCollistions();
+
+		//	testLabel.Content = "player Momentum: " + playerMomentum + ".";
+		//}
+
+		//private void HandelInputs()
+		//{
+
+		//	if (leftDown && rightDown || !leftDown && !rightDown) { if (playerMomentum > 0) { playerMomentum--; } else if (playerMomentum < 0) { playerMomentum++; } }
+		//	else if (leftDown) { if (playerMomentum > -playerMaxMomentum) { playerMomentum--; } }
+		//	else if (rightDown) { if (playerMomentum < playerMaxMomentum) { playerMomentum++; } }
+
+		//	if (spaceDown) 
+		//	{ if (spaceDown && readyToShoot ){ AddPlayerShot(); } }
+
+		//}
+
+		//private void HandelPlayer()
+		//{
+		//	MovePlayer();
+		//	RotatePlayer();
+		//	UpdatePlayerImage();
+		//}
+
+		//private void HandelEnemys()
+		//{
+		//	List<Rectangle> enemyShips = display.Children.OfType<Rectangle>().Where(x => x.Tag == "enemy").ToList();
+
+		//	foreach (Rectangle rectangle in enemyShips)
+		//	{
+		//		double left = Canvas.GetLeft(rectangle);
 				
-				if (left < 50) { enemyMove = 10; }
-                else if ( left > 700){ enemyMove = -10; }
+		//		if (left < 50) { enemyMove = 10; }
+  //              else if ( left > 700){ enemyMove = -10; }
                
 
-                Canvas.SetLeft(rectangle,left + enemyMove);
-			}
+  //              Canvas.SetLeft(rectangle,left + enemyMove);
+		//	}
 
-		}
+		//}
 
-		private void HandelPlayerShots()
-		{
+		//private void HandelPlayerShots()
+		//{
 
-			MovePlayerShots();
+		//	MovePlayerShots();
 			
-			RemoveRedundentPlayerShots();
-			UpdatePlayerShotImage();
-			UpdateReload();
+		//	RemoveRedundentPlayerShots();
+		//	UpdatePlayerShotImage();
+		//	UpdateReload();
 
 
-		}
+		//}
 
-		private void HandelCollistions()
-		{
-			List<Rectangle> reliventRectangels = display.Children.OfType<Rectangle>().ToList();
+		//private void HandelCollistions()
+		//{
+		//	List<Rectangle> reliventRectangels = display.Children.OfType<Rectangle>().ToList();
 
-			for (int rectangleIndex = reliventRectangels.Count - 1; rectangleIndex >= 0; rectangleIndex--)
-			{
+		//	for (int rectangleIndex = reliventRectangels.Count - 1; rectangleIndex >= 0; rectangleIndex--)
+		//	{
 				
 
-				if (reliventRectangels[rectangleIndex].Tag == "playerShot")
-				{
-					Rect shotHitbox = new Rect(Canvas.GetLeft(reliventRectangels[rectangleIndex]), Canvas.GetTop(reliventRectangels[rectangleIndex]),
-						reliventRectangels[rectangleIndex].Width, reliventRectangels[rectangleIndex].Height);
+		//		if (reliventRectangels[rectangleIndex].Tag == "playerShot")
+		//		{
+		//			Rect shotHitbox = new Rect(Canvas.GetLeft(reliventRectangels[rectangleIndex]), Canvas.GetTop(reliventRectangels[rectangleIndex]),
+		//				reliventRectangels[rectangleIndex].Width, reliventRectangels[rectangleIndex].Height);
 
-					for (int checkRectangleIndex = reliventRectangels.Count - 1; checkRectangleIndex >= 0; checkRectangleIndex--)
-					{
-						if ((string)reliventRectangels[checkRectangleIndex].Tag == "defenceBlock"||
-							(string)reliventRectangels[checkRectangleIndex].Tag == "enemy")
-						{
-							Rect targetHitbox = new Rect(Canvas.GetLeft(reliventRectangels[checkRectangleIndex]), Canvas.GetTop(reliventRectangels[checkRectangleIndex]),
-							reliventRectangels[checkRectangleIndex].Width, reliventRectangels[checkRectangleIndex].Height);
+		//			for (int checkRectangleIndex = reliventRectangels.Count - 1; checkRectangleIndex >= 0; checkRectangleIndex--)
+		//			{
+		//				if ((string)reliventRectangels[checkRectangleIndex].Tag == "defenceBlock"||
+		//					(string)reliventRectangels[checkRectangleIndex].Tag == "enemy")
+		//				{
+		//					Rect targetHitbox = new Rect(Canvas.GetLeft(reliventRectangels[checkRectangleIndex]), Canvas.GetTop(reliventRectangels[checkRectangleIndex]),
+		//					reliventRectangels[checkRectangleIndex].Width, reliventRectangels[checkRectangleIndex].Height);
 
 
-							if (shotHitbox.IntersectsWith(targetHitbox))
-							{
-								display.Children.Remove(reliventRectangels[rectangleIndex]);
-								display.Children.Remove(reliventRectangels[checkRectangleIndex]);
-							}
-						}
-					}
+		//					if (shotHitbox.IntersectsWith(targetHitbox))
+		//					{
+		//						display.Children.Remove(reliventRectangels[rectangleIndex]);
+		//						display.Children.Remove(reliventRectangels[checkRectangleIndex]);
+		//					}
+		//				}
+		//			}
 
 					
-				}
+		//		}
 
-			}
-
-
-		}
+		//	}
 
 
+		//}
 
 
-		private void MovePlayerShots()
-		{
-			foreach (var shot in display.Children.OfType<Rectangle>())
-			{
-				if (shot.Tag == "playerShot") { Canvas.SetTop(shot, Canvas.GetTop(shot) - (shot.Height / 2)); }
 
-			}
-		}
 
-		private void UpdatePlayerImage()
-		{
-			if (playerMomentum > -2 && playerMomentum < 2)
-			{
-				playerImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\Player\\playerMo1.png"));
-			}
-			else if (playerMomentum > 3 && playerMomentum < 8 || playerMomentum < 3 &&playerMomentum > -8)
-			{
-				playerImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\Player\\playerMo2.png"));
-			}
-			else if ( playerMomentum > 8 || playerMomentum < -8 )
-			{
-				playerImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\Player\\playerMo3.png"));
-			}
-		}
+		//private void MovePlayerShots()
+		//{
+		//	foreach (var shot in display.Children.OfType<Rectangle>())
+		//	{
+		//		if (shot.Tag == "playerShot") { Canvas.SetTop(shot, Canvas.GetTop(shot) - (shot.Height / 2)); }
 
-		private void RemoveRedundentPlayerShots()
-		{
+		//	}
+		//}
 
-			for (int childIndex = display.Children.Count - 1; childIndex >= 0; childIndex--)
-			{
+		//private void UpdatePlayerImage()
+		//{
+		//	if (playerMomentum > -2 && playerMomentum < 2)
+		//	{
+		//		playerImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\Player\\playerMo1.png"));
+		//	}
+		//	else if (playerMomentum > 3 && playerMomentum < 8 || playerMomentum < 3 &&playerMomentum > -8)
+		//	{
+		//		playerImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\Player\\playerMo2.png"));
+		//	}
+		//	else if ( playerMomentum > 8 || playerMomentum < -8 )
+		//	{
+		//		playerImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\Player\\playerMo3.png"));
+		//	}
+		//}
 
-				if (display.Children[childIndex].GetType() == typeof(Rectangle) &&
-					Canvas.GetTop(display.Children[childIndex] ) < - 50 )
-				{ display.Children.Remove(display.Children[childIndex]); }
+		//private void RemoveRedundentPlayerShots()
+		//{
+
+		//	for (int childIndex = display.Children.Count - 1; childIndex >= 0; childIndex--)
+		//	{
+
+		//		if (display.Children[childIndex].GetType() == typeof(Rectangle) &&
+		//			Canvas.GetTop(display.Children[childIndex] ) < - 50 )
+		//		{ display.Children.Remove(display.Children[childIndex]); }
 				
-			}
+		//	}
 
 		
-		}
-		private void UpdateReload()
-		{
-			if (shotReloadCount == 0) { readyToShoot = true; }
-			else if (shotReloadCount > 0) { shotReloadCount--; }
-			else {  Console.WriteLine("Reaload Error"); }
+		//}
+		//private void UpdateReload()
+		//{
+		//	if (shotReloadCount == 0) { readyToShoot = true; }
+		//	else if (shotReloadCount > 0) { shotReloadCount--; }
+		//	else {  Console.WriteLine("Reaload Error"); }
 
-		}
+		//}
 		
 
 
-		private void AddPlayerShot()
-		{
-			GetRandomPlayerShotImage();
+		//private void AddPlayerShot()
+		//{
+		//	GetRandomPlayerShotImage();
 
-			Rectangle spawnShot = new Rectangle
-			{
+		//	Rectangle spawnShot = new Rectangle
+		//	{
 
-				Width = 10,
-				Height = 30,
-				Fill = playerShotImage,
+		//		Width = 10,
+		//		Height = 30,
+		//		Fill = playerShotImage,
 				
-				Tag = "playerShot"
+		//		Tag = "playerShot"
 
-			};
+		//	};
 
-			Canvas.SetLeft(spawnShot,Canvas.GetLeft(display.Children.OfType<Rectangle>().First(x => x.Tag == "player")) +(display.Children.OfType<Rectangle>().First(x => x.Tag == "player").Width/2) - (spawnShot.Width/2)  );
-			Canvas.SetTop(spawnShot, Canvas.GetTop(display.Children.OfType<Rectangle>().First(x => x.Tag == "player")) - spawnShot.Height + 20);
+		//	Canvas.SetLeft(spawnShot,Canvas.GetLeft(display.Children.OfType<Rectangle>().First(x => x.Tag == "player")) +(display.Children.OfType<Rectangle>().First(x => x.Tag == "player").Width/2) - (spawnShot.Width/2)  );
+		//	Canvas.SetTop(spawnShot, Canvas.GetTop(display.Children.OfType<Rectangle>().First(x => x.Tag == "player")) - spawnShot.Height + 20);
 
-			display.Children.Add(spawnShot);
-			shotReloadCount = shotReloadValue;
-			readyToShoot = false;
+		//	display.Children.Add(spawnShot);
+		//	shotReloadCount = shotReloadValue;
+		//	readyToShoot = false;
 
-		}
-
-
-
-		private void MovePlayer()
-		{
-
-			if (playerMomentum != 0)
-			{
-				double nextPlayerLeft = Canvas.GetLeft(display.Children.OfType<Rectangle>().First(x => x.Tag == "player")) + (playerSpeed * playerMomentum);
-
-				if (nextPlayerLeft < 25) { Canvas.SetLeft(display.Children.OfType<Rectangle>().First(x => x.Tag == "player"), 25); }
-				else if (nextPlayerLeft > 710) { Canvas.SetLeft(display.Children.OfType<Rectangle>().First(x => x.Tag == "player"), 710); }
-				else { Canvas.SetLeft(display.Children.OfType<Rectangle>().First(x => x.Tag == "player"), nextPlayerLeft); }
-
-			}
-		}
-
-		private void RotatePlayer()
-		{
-			playerRotation.Angle = playerMomentum * 3;
-			display.Children.OfType<Rectangle>().First(x => x.Tag == "player").RenderTransform = playerRotation;
-
-		}
+		//}
 
 
 
+		//private void MovePlayer()
+		//{
 
+		//	if (playerMomentum != 0)
+		//	{
+		//		double nextPlayerLeft = Canvas.GetLeft(display.Children.OfType<Rectangle>().First(x => x.Tag == "player")) + (playerSpeed * playerMomentum);
 
-		private void KeyDownEvent(object sender, KeyEventArgs e)
-		{
-			if (e.Key == Key.Left)  { leftDown  = true; }
-			if (e.Key == Key.Right) { rightDown = true; }
-			if (e.Key == Key.Space) { spaceDown = true; }
-		}
+		//		if (nextPlayerLeft < 25) { Canvas.SetLeft(display.Children.OfType<Rectangle>().First(x => x.Tag == "player"), 25); }
+		//		else if (nextPlayerLeft > 710) { Canvas.SetLeft(display.Children.OfType<Rectangle>().First(x => x.Tag == "player"), 710); }
+		//		else { Canvas.SetLeft(display.Children.OfType<Rectangle>().First(x => x.Tag == "player"), nextPlayerLeft); }
 
-		private void KeyUpEvent(object sender, KeyEventArgs e)
-		{
+		//	}
+		//}
 
-			if (e.Key == Key.Left)  { leftDown  = false; }
-			if (e.Key == Key.Right) { rightDown = false; }
-			if (e.Key == Key.Space) { spaceDown = false; }
+		//private void RotatePlayer()
+		//{
+		//	playerRotation.Angle = playerMomentum * 3;
+		//	display.Children.OfType<Rectangle>().First(x => x.Tag == "player").RenderTransform = playerRotation;
 
-		}
+		//}
 
 
 
 
 
-		private void AddDefenceBlock(double positionLeft, double positionTop)
-		{
+		//private void KeyDownEvent(object sender, KeyEventArgs e)
+		//{
+		//	if (e.Key == Key.Left)  { leftDown  = true; }
+		//	if (e.Key == Key.Right) { rightDown = true; }
+		//	if (e.Key == Key.Space) { spaceDown = true; }
+		//}
 
-			//ImageBrush defenceBlockBrush = new ImageBrush();
-			defenceBlockBrush.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\block.png"));
+		//private void KeyUpEvent(object sender, KeyEventArgs e)
+		//{
 
-			Rectangle defenceBlock = new Rectangle
-			{
+		//	if (e.Key == Key.Left)  { leftDown  = false; }
+		//	if (e.Key == Key.Right) { rightDown = false; }
+		//	if (e.Key == Key.Space) { spaceDown = false; }
 
-				Width = 15,
-				Height = 15,
-				Fill = defenceBlockBrush,
-				Tag = "defenceBlock"
+		//}
 
-			};
 
-			Canvas.SetLeft(defenceBlock, positionLeft);
-			Canvas.SetTop(defenceBlock, positionTop);
 
-			display.Children.Add(defenceBlock);
-		}
 
-		private void AddDefenceBlockGroup(double positionLeft, double positionTop)
-		{
+
+		//private void AddDefenceBlock(double positionLeft, double positionTop)
+		//{
+
+		//	//ImageBrush defenceBlockBrush = new ImageBrush();
+		//	defenceBlockBrush.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\block.png"));
+
+		//	Rectangle defenceBlock = new Rectangle
+		//	{
+
+		//		Width = 15,
+		//		Height = 15,
+		//		Fill = defenceBlockBrush,
+		//		Tag = "defenceBlock"
+
+		//	};
+
+		//	Canvas.SetLeft(defenceBlock, positionLeft);
+		//	Canvas.SetTop(defenceBlock, positionTop);
+
+		//	display.Children.Add(defenceBlock);
+		//}
+
+		//private void AddDefenceBlockGroup(double positionLeft, double positionTop)
+		//{
 			
-			defenceBlockData.Add(new Point(positionLeft     , positionTop + 20));
-			defenceBlockData.Add(new Point(positionLeft + 20, positionTop + 20));
+		//	defenceBlockData.Add(new Point(positionLeft     , positionTop + 20));
+		//	defenceBlockData.Add(new Point(positionLeft + 20, positionTop + 20));
 
-			defenceBlockData.Add(new Point(positionLeft     , positionTop + 40));
-			defenceBlockData.Add(new Point(positionLeft + 20, positionTop + 40));
+		//	defenceBlockData.Add(new Point(positionLeft     , positionTop + 40));
+		//	defenceBlockData.Add(new Point(positionLeft + 20, positionTop + 40));
 
-			defenceBlockData.Add(new Point(positionLeft + 20, positionTop));
-			defenceBlockData.Add(new Point(positionLeft + 40, positionTop));
-			defenceBlockData.Add(new Point(positionLeft + 60, positionTop));
+		//	defenceBlockData.Add(new Point(positionLeft + 20, positionTop));
+		//	defenceBlockData.Add(new Point(positionLeft + 40, positionTop));
+		//	defenceBlockData.Add(new Point(positionLeft + 60, positionTop));
 
-			defenceBlockData.Add(new Point(positionLeft + 40, positionTop + 20));
+		//	defenceBlockData.Add(new Point(positionLeft + 40, positionTop + 20));
 
-			defenceBlockData.Add(new Point(positionLeft + 60, positionTop + 20));
-			defenceBlockData.Add(new Point(positionLeft + 80, positionTop + 20));
+		//	defenceBlockData.Add(new Point(positionLeft + 60, positionTop + 20));
+		//	defenceBlockData.Add(new Point(positionLeft + 80, positionTop + 20));
 
-			defenceBlockData.Add(new Point(positionLeft + 60, positionTop + 40));
-			defenceBlockData.Add(new Point(positionLeft + 80, positionTop + 40));
-		}
+		//	defenceBlockData.Add(new Point(positionLeft + 60, positionTop + 40));
+		//	defenceBlockData.Add(new Point(positionLeft + 80, positionTop + 40));
+		//}
 
 
 
-		private void InitializeBackground()
-		{
-			
-
-			backgroundImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\background.png"));
+		//private void InitializeBackground()
+		//{
 			
 
-			Rectangle backgroud = new Rectangle
-			{
+		//	backgroundImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\background.png"));
+			
 
-				Width = 800,
-				Height = 450,
-				Fill = backgroundImage,
-				Tag = "background"
+		//	Rectangle backgroud = new Rectangle
+		//	{
 
-			};
+		//		Width = 800,
+		//		Height = 450,
+		//		Fill = backgroundImage,
+		//		Tag = "background"
 
-			Canvas.SetLeft(backgroud, 0);
-			Canvas.SetTop(backgroud, 0);
+		//	};
 
-			display.Children.Add(backgroud);
-		}
+		//	Canvas.SetLeft(backgroud, 0);
+		//	Canvas.SetTop(backgroud, 0);
+
+		//	display.Children.Add(backgroud);
+		//}
 	
-		private void InitializePlayer()
-		{
+		//private void InitializePlayer()
+		//{
 
-			playerImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\Player\\playerMo1.png"));
+		//	playerImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\Player\\playerMo1.png"));
 
-			Rectangle player = new Rectangle
-			{
+		//	Rectangle player = new Rectangle
+		//	{
 
-				Width = 50,
-				Height = 50,
-				Fill = playerImage,
-				Tag = "player"
+		//		Width = 50,
+		//		Height = 50,
+		//		Fill = playerImage,
+		//		Tag = "player"
 
-			};
+		//	};
 			
-			Canvas.SetLeft(player, 380);
-			Canvas.SetTop(player, 350);
+		//	Canvas.SetLeft(player, 380);
+		//	Canvas.SetTop(player, 350);
 
-			display.Children.Add(player);
+		//	display.Children.Add(player);
 			
-			playerRotation.CenterX = display.Children.OfType<Rectangle>().First(x => x.Tag == "player").Width / 2;
-			playerRotation.CenterY = display.Children.OfType<Rectangle>().First(x => x.Tag == "player").Height;
+		//	playerRotation.CenterX = display.Children.OfType<Rectangle>().First(x => x.Tag == "player").Width / 2;
+		//	playerRotation.CenterY = display.Children.OfType<Rectangle>().First(x => x.Tag == "player").Height;
 		
-		}
+		//}
 
-		private void InitializeDefenceBlocks() 
-		{
+		//private void InitializeDefenceBlocks() 
+		//{
 
-			defenceBlockData = new List<Point>();
+		//	defenceBlockData = new List<Point>();
 
-			AddDefenceBlockGroup(70, 280);
-			AddDefenceBlockGroup(260, 280);
-			AddDefenceBlockGroup(440, 280);
-			AddDefenceBlockGroup(620, 280);
+		//	AddDefenceBlockGroup(70, 280);
+		//	AddDefenceBlockGroup(260, 280);
+		//	AddDefenceBlockGroup(440, 280);
+		//	AddDefenceBlockGroup(620, 280);
 
-			foreach (var point in defenceBlockData)
-			{
-				AddDefenceBlock(point.X,point.Y);
-			}
+		//	foreach (var point in defenceBlockData)
+		//	{
+		//		AddDefenceBlock(point.X,point.Y);
+		//	}
 			
-		}
+		//}
 
-		private void InitializeEnemys()
-		{
-			enemyMove = 10;
+		//private void InitializeEnemys()
+		//{
+		//	enemyMove = 10;
 
-			enemyPosition = new List<Point>();
+		//	enemyPosition = new List<Point>();
 
-			enemyPosition.Add(new Point(100, 100));
-			enemyPosition.Add(new Point(200, 100));
-
-
-			foreach (var point in enemyPosition)
-			{
-				Rectangle enemy = new Rectangle
-				{
-					Height = 50,
-					Width = 50,
-					Fill = Brushes.Red,
-					Tag = "enemy"
-				};
-
-				Canvas.SetLeft(enemy, point.X);
-				Canvas.SetTop(enemy, point.Y);
-
-				display.Children.Add(enemy);
+		//	enemyPosition.Add(new Point(100, 100));
+		//	enemyPosition.Add(new Point(200, 100));
 
 
-			}
-		}
+		//	foreach (var point in enemyPosition)
+		//	{
+		//		Rectangle enemy = new Rectangle
+		//		{
+		//			Height = 50,
+		//			Width = 50,
+		//			Fill = Brushes.Red,
+		//			Tag = "enemy"
+		//		};
+
+		//		Canvas.SetLeft(enemy, point.X);
+		//		Canvas.SetTop(enemy, point.Y);
+
+		//		display.Children.Add(enemy);
 
 
-		private void GetRandomPlayerShotImage()
-		{
+		//	}
+		//}
 
-			Random rand = new Random();
+
+		//private void GetRandomPlayerShotImage()
+		//{
+
+		//	Random rand = new Random();
 		
-		    switch (rand.Next(1,4))
-			{
-				case 1: playerShotImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\PlayerShot\\PlayerShot01.png")); break;
-				case 2: playerShotImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\PlayerShot\\PlayerShot02.png")); break;
-				case 3: playerShotImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\PlayerShot\\PlayerShot03.png")); break;
-				case 4: playerShotImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\PlayerShot\\PlayerShot04.png")); break;
+		//    switch (rand.Next(1,4))
+		//	{
+		//		case 1: playerShotImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\PlayerShot\\PlayerShot01.png")); break;
+		//		case 2: playerShotImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\PlayerShot\\PlayerShot02.png")); break;
+		//		case 3: playerShotImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\PlayerShot\\PlayerShot03.png")); break;
+		//		case 4: playerShotImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\PlayerShot\\PlayerShot04.png")); break;
 
-				default: playerShotImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\PlayerShot\\PlayerShot01.png")); break;
-			}
+		//		default: playerShotImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\PlayerShot\\PlayerShot01.png")); break;
+		//	}
 
-		}
+		//}
 
-		private void UpdatePlayerShotImage()
-		{
-			playerShotImageDelay++;
+		//private void UpdatePlayerShotImage()
+		//{
+		//	playerShotImageDelay++;
 
-			if(playerShotImageDelay>2)
-			{
-				playerShotImageDelay = 0;
+		//	if(playerShotImageDelay>2)
+		//	{
+		//		playerShotImageDelay = 0;
 
-				List<Rectangle> reliventRectangels = display.Children.OfType<Rectangle>().ToList();
-				for (int i = 0; i < reliventRectangels.Count; i++)
-				{ 
-					if(reliventRectangels[i].Tag == "playerShot")
-					{
-						GetRandomPlayerShotImage();
-						reliventRectangels[i].Fill = playerShotImage;
-					}
+		//		List<Rectangle> reliventRectangels = display.Children.OfType<Rectangle>().ToList();
+		//		for (int i = 0; i < reliventRectangels.Count; i++)
+		//		{ 
+		//			if(reliventRectangels[i].Tag == "playerShot")
+		//			{
+		//				GetRandomPlayerShotImage();
+		//				reliventRectangels[i].Fill = playerShotImage;
+		//			}
 			
-				}
+		//		}
 
-			}
+		//	}
 			
-		}
+		//}
 
 
 	}
