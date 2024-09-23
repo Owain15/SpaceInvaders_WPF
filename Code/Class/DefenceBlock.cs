@@ -1,0 +1,22 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SpaceInvaders_WPF.Code.Class
+{
+	internal class DefenceBlock
+	{
+		public double left;
+		
+		public double top;
+
+
+		public DefenceBlock() 
+		{
+		
+		}
+
+	}
+}
