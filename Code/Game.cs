@@ -6,16 +6,25 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 using System.Windows.Threading;
+using System.Xml.Linq;
 
 namespace SpaceInvaders_WPF.Code
 {
     class Game
     {
       
+		//public Canvas display;
+
         public bool isRunning;
 
         public Player player;
+
+		public Inputs input;
 
 		public List<Enemy> enemyList;
 
@@ -27,9 +36,11 @@ namespace SpaceInvaders_WPF.Code
 
 		
         
-        public Game()
+        public Game( Inputs input)
         { 
             isRunning = false;
+
+			this.input = input;
 
             player = new Player();
 
@@ -37,35 +48,59 @@ namespace SpaceInvaders_WPF.Code
 
             defenceBlockList = new List<DefenceBlock>();
 
-        }
 
-        public void Start()
-        {
-			//leftDown = false;
-			//rightDown = false;
-			//spaceDown = false;
-
-			//readyToShoot = true;
-
-			//gameTimer.Start();
-		}
-
-        public void Pause()
-        { 
-            //gameTimer += RunPauseEvent;
-        }
-
-        public void Stop()
-        {
+			//InializTimmer();
 
         }
 
-		private void GameLoop(object sender, EventArgs e)
+		//private void InializTimmer()
+		//{
+		//	gameTimer.Tick += GameLoop;
+		//	gameTimer.Interval = TimeSpan.FromMilliseconds(refreshRate);
+		//}
+
+		////public void Start()
+  ////      {
+		////	//leftDown = false;
+		////	//rightDown = false;
+		////	//spaceDown = false;
+
+		////	//readyToShoot = true;
+		////	//Rectangle playerDisplay = new Rectangle(player.Length,player.Height);
+		////	Rectangle playerDisplay = new Rectangle
+		////	{
+
+		////		Width = player.Width,
+		////		Height = player.Height,
+				
+		////		Fill = Brushes.Aqua
+
+			
+
+		////	};
+		////	//display.Children.Add(playerDisplay);
+
+		////	Canvas.SetLeft(playerDisplay, player.Left);
+		////	Canvas.SetTop(playerDisplay, player.Top);
+
+		////	//gameTimer.Start();
+		////}
+
+  ////      public void Pause()
+  ////      { 
+  ////          //gameTimer += RunPauseEvent;
+  ////      }
+
+  ////      public void Stop()
+  ////      {
+
+  ////      }
+
+		private void UpdateGameState()
 		{
-			//HandelInputs();
-
-			//HandelPlayer();
-
+			
+			player.Loop(input);
+			
 			//HandelEnemys();
 
 			//HandelPlayerShots();
@@ -75,12 +110,52 @@ namespace SpaceInvaders_WPF.Code
 			//testLabel.Content = "player Momentum: " + playerMomentum + ".";
 		}
 
+		public Canvas RunGameLoopReturnNextCanvas(Canvas display)
+		{
+			UpdateGameState();
+
+			display.Children.Clear();
+
+			display = RenderCanvas(display);
+
+			return display;
+		}
+		private Canvas RenderCanvas(Canvas display) 
+		{
+
+			RenderPlayer(display);
+
+			return display;
+		
+		}
+		
+		private void RenderPlayer(Canvas display)
+		{
+			Rectangle ship = new Rectangle
+			{ 
+				Height = player.Height,
+				Width = player.Width,
+				Fill = Brushes.Aqua
+			};
+			
+			display.Children.Add(ship);
+			
+			Canvas.SetLeft(ship,player.Left);
+			Canvas.SetTop(ship, player.Top);
+
+		
+			//Rotation.CenterX = ship.Width / 2;
+			//Rotation.CenterY = ship.Height;
+			ship.RenderTransform = player.Rotation;
+		
+		}
+
 		private void HandelInputs()
 		{
 
-		//	//if (leftDown && rightDown || !leftDown && !rightDown) { if (playerMomentum > 0) { playerMomentum--; } else if (playerMomentum < 0) { playerMomentum++; } }
-		//	//else if (leftDown) { if (playerMomentum > -playerMaxMomentum) { playerMomentum--; } }
-		//	//else if (rightDown) { if (playerMomentum < playerMaxMomentum) { playerMomentum++; } }
+			//if (leftDown && rightDown || !leftDown && !rightDown) { if (playerMomentum > 0) { playerMomentum--; } else if (playerMomentum < 0) { playerMomentum++; } }
+			//else if (leftDown) { if (playerMomentum > -playerMaxMomentum) { playerMomentum--; } }
+			//else if (rightDown) { if (playerMomentum < playerMaxMomentum) { playerMomentum++; } }
 
 		//	//if (spaceDown)
 		//	//{ if (spaceDown && readyToShoot) { AddPlayerShot(); } }

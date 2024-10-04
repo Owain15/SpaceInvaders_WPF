@@ -23,6 +23,9 @@ namespace SpaceInvaders_WPF
 		int refreshRate = 20;
 		DispatcherTimer gameTimer = new DispatcherTimer();
 
+		Code.Game game;
+		Code.Inputs input;
+
 		//bool leftDown, rightDown, spaceDown;
 
 		//int playerSpeed = 2;
@@ -48,24 +51,24 @@ namespace SpaceInvaders_WPF
 		public MainWindow()
 		{
 			InitializeComponent();
-
-		//	InitializeBackground();
-
-		//	InitializePlayer();
-			
-		//	InitializeDefenceBlocks();
-
-		//	InitializeEnemys();
-
-
-
-		//	display.Focus();
 		
-		//	gameTimer.Tick += GameLoop;
-		//	gameTimer.Interval = TimeSpan.FromMilliseconds(refreshRate);
+			input = new Code.Inputs();
 
-		//	StartGame();
+		    game = new Code.Game(input);
 
+			display.Focus();
+
+			gameTimer.Tick += RunGameLoop;
+			gameTimer.Interval = TimeSpan.FromMilliseconds(refreshRate);
+
+			gameTimer.Start();
+
+		}
+
+		private void RunGameLoop(object sender, EventArgs e)
+		{
+			
+			display = game.RunGameLoopReturnNextCanvas(display);
 		}
 
 		//private void StartGame()
@@ -120,12 +123,12 @@ namespace SpaceInvaders_WPF
 		//	foreach (Rectangle rectangle in enemyShips)
 		//	{
 		//		double left = Canvas.GetLeft(rectangle);
-				
-		//		if (left < 50) { enemyMove = 10; }
-  //              else if ( left > 700){ enemyMove = -10; }
-               
 
-  //              Canvas.SetLeft(rectangle,left + enemyMove);
+		//		if (left < 50) { enemyMove = 10; }
+		//              else if ( left > 700){ enemyMove = -10; }
+
+
+		//              Canvas.SetLeft(rectangle,left + enemyMove);
 		//	}
 
 		//}
@@ -134,7 +137,7 @@ namespace SpaceInvaders_WPF
 		//{
 
 		//	MovePlayerShots();
-			
+
 		//	RemoveRedundentPlayerShots();
 		//	UpdatePlayerShotImage();
 		//	UpdateReload();
@@ -148,7 +151,7 @@ namespace SpaceInvaders_WPF
 
 		//	for (int rectangleIndex = reliventRectangels.Count - 1; rectangleIndex >= 0; rectangleIndex--)
 		//	{
-				
+
 
 		//		if (reliventRectangels[rectangleIndex].Tag == "playerShot")
 		//		{
@@ -172,7 +175,7 @@ namespace SpaceInvaders_WPF
 		//				}
 		//			}
 
-					
+
 		//		}
 
 		//	}
@@ -217,10 +220,10 @@ namespace SpaceInvaders_WPF
 		//		if (display.Children[childIndex].GetType() == typeof(Rectangle) &&
 		//			Canvas.GetTop(display.Children[childIndex] ) < - 50 )
 		//		{ display.Children.Remove(display.Children[childIndex]); }
-				
+
 		//	}
 
-		
+
 		//}
 		//private void UpdateReload()
 		//{
@@ -229,7 +232,7 @@ namespace SpaceInvaders_WPF
 		//	else {  Console.WriteLine("Reaload Error"); }
 
 		//}
-		
+
 
 
 		//private void AddPlayerShot()
@@ -242,7 +245,7 @@ namespace SpaceInvaders_WPF
 		//		Width = 10,
 		//		Height = 30,
 		//		Fill = playerShotImage,
-				
+
 		//		Tag = "playerShot"
 
 		//	};
@@ -283,21 +286,22 @@ namespace SpaceInvaders_WPF
 
 
 
-		//private void KeyDownEvent(object sender, KeyEventArgs e)
-		//{
-		//	if (e.Key == Key.Left)  { leftDown  = true; }
-		//	if (e.Key == Key.Right) { rightDown = true; }
-		//	if (e.Key == Key.Space) { spaceDown = true; }
-		//}
+		private void KeyDownEvent(object sender, KeyEventArgs e)
+		{
+			input.KeyDownEvent(sender,e);
+			//if (e.Key == Key.Left) { leftDown = true; }
+			//if (e.Key == Key.Right) { rightDown = true; }
+			//if (e.Key == Key.Space) { spaceDown = true; }
+		}
 
-		//private void KeyUpEvent(object sender, KeyEventArgs e)
-		//{
-
+		private void KeyUpEvent(object sender, KeyEventArgs e)
+		{
+			input.KeyUpEvent(sender,e);
 		//	if (e.Key == Key.Left)  { leftDown  = false; }
 		//	if (e.Key == Key.Right) { rightDown = false; }
 		//	if (e.Key == Key.Space) { spaceDown = false; }
 
-		//}
+		}
 
 
 
@@ -327,7 +331,7 @@ namespace SpaceInvaders_WPF
 
 		//private void AddDefenceBlockGroup(double positionLeft, double positionTop)
 		//{
-			
+
 		//	defenceBlockData.Add(new Point(positionLeft     , positionTop + 20));
 		//	defenceBlockData.Add(new Point(positionLeft + 20, positionTop + 20));
 
@@ -351,10 +355,10 @@ namespace SpaceInvaders_WPF
 
 		//private void InitializeBackground()
 		//{
-			
+
 
 		//	backgroundImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\background.png"));
-			
+
 
 		//	Rectangle backgroud = new Rectangle
 		//	{
@@ -371,7 +375,7 @@ namespace SpaceInvaders_WPF
 
 		//	display.Children.Add(backgroud);
 		//}
-	
+
 		//private void InitializePlayer()
 		//{
 
@@ -386,15 +390,15 @@ namespace SpaceInvaders_WPF
 		//		Tag = "player"
 
 		//	};
-			
+
 		//	Canvas.SetLeft(player, 380);
 		//	Canvas.SetTop(player, 350);
 
 		//	display.Children.Add(player);
-			
+
 		//	playerRotation.CenterX = display.Children.OfType<Rectangle>().First(x => x.Tag == "player").Width / 2;
 		//	playerRotation.CenterY = display.Children.OfType<Rectangle>().First(x => x.Tag == "player").Height;
-		
+
 		//}
 
 		//private void InitializeDefenceBlocks() 
@@ -411,7 +415,7 @@ namespace SpaceInvaders_WPF
 		//	{
 		//		AddDefenceBlock(point.X,point.Y);
 		//	}
-			
+
 		//}
 
 		//private void InitializeEnemys()
@@ -448,7 +452,7 @@ namespace SpaceInvaders_WPF
 		//{
 
 		//	Random rand = new Random();
-		
+
 		//    switch (rand.Next(1,4))
 		//	{
 		//		case 1: playerShotImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\PlayerShot\\PlayerShot01.png")); break;
@@ -477,11 +481,11 @@ namespace SpaceInvaders_WPF
 		//				GetRandomPlayerShotImage();
 		//				reliventRectangels[i].Fill = playerShotImage;
 		//			}
-			
+
 		//		}
 
 		//	}
-			
+
 		//}
 
 

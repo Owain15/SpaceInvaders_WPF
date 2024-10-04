@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="SpaceInvaders" Height="450" Width="800" >
 
-    <Canvas Name="display" Background="Black" Focusable="True" KeyDown="KeyDownEvent" KeyUp="KeyUpEvent">
+    <Canvas Name="display" Background="Black" Focusable="True" KeyDown="KeyDownEvent" KeyUp="KeyUpEvent" >
       
         <!--<Rectangle Name="backgroud" Fill="LightBlue" Height="450" Width="800" Canvas.Left="0" Canvas.Top="0" />-->
 

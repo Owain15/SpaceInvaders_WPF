@@ -10,11 +10,6 @@ namespace SpaceInvaders_WPF.Code.Class
 {
 	internal class Shot
 	{
-		public bool readyToShoot;
-		
-		public int shotReloadValue = 4;
-		
-		public int shotReloadCount = 0;
 
 		public int playerShotImageDelay = 0;
 
@@ -32,11 +27,11 @@ namespace SpaceInvaders_WPF.Code.Class
 		//change to move shot. add x and y volocatys.
 		private void MovePlayerShots()
 		{
-			foreach (var shot in display.Children.OfType<Rectangle>())
-			{
-				if (shot.Tag == "playerShot") { Canvas.SetTop(shot, Canvas.GetTop(shot) - (shot.Height / 2)); }
+			//foreach (var shot in display.Children.OfType<Rectangle>())
+			//{
+			//	if (shot.Tag == "playerShot") { Canvas.SetTop(shot, Canvas.GetTop(shot) - (shot.Height / 2)); }
 
-			}
+			//}
 		}
 
 		private void UpdateReload()
