@@ -53,17 +53,49 @@ namespace SpaceInvaders_WPF.Code.Class
 
 		}
 
-		public void Loop(Inputs input)
+		public void UpdateData(Inputs input)
 		{
-			HandelInput(input);
-			MovePlayer();
-			RotatePlayer();
+			UpdateMomentum(input);
+			UpdatePostion();
+			UpdateRotation();
+			UpdateWeapon(input);
 			//HandelColitions?
 
 		}
-
-		private void HandelInput(Inputs input)
+		public void UpdateShotData() 
 		{
+			foreach (Shot shot in shotList) 
+			{
+				shot.UpdatePosition();
+			}
+		}
+
+		private void UpdateWeapon(Inputs input)
+		{
+
+			if (input.spaceDown && Weapon.readyToShoot) 
+			{ 
+				Weapon.readyToShoot = false;
+				shotList.Add(new Shot(this)); 
+			}
+			
+			if (!Weapon.readyToShoot)
+			{
+				Weapon.ReloadCounter++;
+			}
+			
+			if (Weapon.ReloadCounter >= Weapon.ReloadValue)
+			{ 
+				Weapon.readyToShoot = true;
+				Weapon.ReloadCounter = 0;
+			}
+		
+		}
+
+
+		private void UpdateMomentum(Inputs input)
+		{
+
 			if (input.leftDown && input.rightDown || !input.leftDown && !input.rightDown) 
 			{
 			   	  if (Momentum > 0) { Momentum--; } 
@@ -72,11 +104,9 @@ namespace SpaceInvaders_WPF.Code.Class
 			else if (input.leftDown && Momentum > -MaxMomentum) { Momentum--; } 
 			else if (input.rightDown && Momentum < MaxMomentum) { Momentum++; }
 
-			if (input.spaceDown && Weapon.readyToShoot) { shotList.Add(new Shot) }
-
 		}
 
-		private void MovePlayer()
+		private void UpdatePostion()
 		{
 
 			if (Momentum != 0)
@@ -91,7 +121,7 @@ namespace SpaceInvaders_WPF.Code.Class
 
 		}
 
-		private void RotatePlayer()
+		private void UpdateRotation()
 		{
 			Rotation.Angle = Momentum * 3;
 			//display.Children.OfType<Rectangle>().First(x => x.Tag == "player").RenderTransform = playerRotation;

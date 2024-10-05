@@ -12,9 +12,9 @@ namespace SpaceInvaders_WPF.Code.Class
 
 		public bool readyToShoot;
 
-		public int shotReloadValue = 4;
+		public int ReloadValue;
 
-		public int shotReloadCount = 0;
+		public int ReloadCounter;
 
 		public WeaponType()
 		{
@@ -30,11 +30,19 @@ namespace SpaceInvaders_WPF.Code.Class
 		{
 			switch(Type)
 			{
-				case ShotType.SingleShot: shotReloadValue = 4; shotReloadCount = 0; break;
-				case ShotType.BurstShot:  shotReloadValue = 2; shotReloadCount = 0; break;
+				case ShotType.SingleShot: ReloadValue = 10; ReloadCounter = 0; break;
+				case ShotType.BurstShot:  ReloadValue = 6; ReloadCounter = 0; break;
 
-				default: shotReloadValue = 4; shotReloadCount = 0; break;
+				default: ReloadValue = 40; ReloadCounter = 0; break;
 			}
+		}
+
+		private void UpdateReload()
+		{
+			if (ReloadCounter == 0) { readyToShoot = true; }
+			else if (ReloadCounter > 0) { ReloadCounter--; }
+			else { Console.WriteLine("Reaload Error"); }
+
 		}
 
 	}

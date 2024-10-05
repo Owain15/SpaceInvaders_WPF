@@ -99,7 +99,8 @@ namespace SpaceInvaders_WPF.Code
 		private void UpdateGameState()
 		{
 			
-			player.Loop(input);
+			player.UpdateData(input);
+			player.UpdateShotData();
 			
 			//HandelEnemys();
 
@@ -124,6 +125,7 @@ namespace SpaceInvaders_WPF.Code
 		{
 
 			RenderPlayer(display);
+			RenderPlayerShots(display);
 
 			return display;
 		
@@ -148,6 +150,29 @@ namespace SpaceInvaders_WPF.Code
 			//Rotation.CenterY = ship.Height;
 			ship.RenderTransform = player.Rotation;
 		
+		}
+
+		private void RenderPlayerShots(Canvas display)
+		{
+			foreach(Shot shot in player.shotList)
+			{
+				Rectangle shotBox = new Rectangle
+				{
+					Height = shot.Height,
+					Width = shot.Width,
+					Fill = Brushes.Aqua
+				};
+
+				display.Children.Add(shotBox);
+
+				Canvas.SetLeft(shotBox, shot.Left);
+				Canvas.SetTop(shotBox, shot.Top);
+			}
+
+			////Rotation.CenterX = ship.Width / 2;
+			////Rotation.CenterY = ship.Height;
+			//ship.RenderTransform = player.Rotation;
+
 		}
 
 		private void HandelInputs()

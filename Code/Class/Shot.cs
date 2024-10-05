@@ -10,21 +10,40 @@ namespace SpaceInvaders_WPF.Code.Class
 {
 	internal class Shot
 	{
+		public double Height;
 
-		public int playerShotImageDelay = 0;
+		public double Width;
 
-		public int leftMomentum;
+		public double Left;
+
+		public double Top;	
+
+		//public int PlayerShotImageDelay = 0;
+
+		public double LeftMomentum;
 		
-		public int topMomentum;
+		public double TopMomentum;
 
-		RotateTransform Rotation = new RotateTransform();
+		//RotateTransform Rotation = new RotateTransform();
 
-		public Shot()
+		public Shot(Player ship)
 		{
+			Height = 5;
+			Width = 3;
 
+			Left = ship.Left+(ship.Width/2);
+			Top = ship.Top-(Height);
+
+			TopMomentum = 15;
 		}
 
 		//change to move shot. add x and y volocatys.
+		
+		public void UpdatePosition()
+		{
+			Top = Top - TopMomentum;
+		}
+		
 		private void MovePlayerShots()
 		{
 			//foreach (var shot in display.Children.OfType<Rectangle>())
@@ -34,13 +53,13 @@ namespace SpaceInvaders_WPF.Code.Class
 			//}
 		}
 
-		private void UpdateReload()
-		{
-			if (shotReloadCount == 0) { readyToShoot = true; }
-			else if (shotReloadCount > 0) { shotReloadCount--; }
-			else { Console.WriteLine("Reaload Error"); }
+		//private void UpdateReload()
+		//{
+		//	if (shotReloadCount == 0) { readyToShoot = true; }
+		//	else if (shotReloadCount > 0) { shotReloadCount--; }
+		//	else { Console.WriteLine("Reaload Error"); }
 
-		}
+		//}
 
 		private void AddPlayerShot()
 		{
