@@ -30,11 +30,11 @@ namespace SpaceInvaders_WPF.Code.Class
 
 		private void InializEmemyList()
 		{
-			//UnitList.Add(new Enemy(100, 100));
-			//UnitList.Add(new Enemy(200, 100));
-			UnitList.Add(new Enemy(300, 100));
-			UnitList.Add(new Enemy(420, 80));
-			UnitList.Add(new Enemy(600, 100));
+			//UnitList.Add(new Enemy(1, 100, 100));
+			//UnitList.Add(new Enemy(2, 200, 100));
+			//UnitList.Add(new Enemy(3, 300, 100));
+			UnitList.Add(new Enemy(4, 420, 80));
+			UnitList.Add(new Enemy(5, 600, 100));
 			
 		}
 		public void UpdatePositions() { foreach (Enemy enemy in UnitList) { enemy.UpdateData(UnitList); } }

@@ -28,6 +28,8 @@ namespace SpaceInvaders_WPF.Code
 
 		public EnemyGroup enemys;
 
+		//public ExplotionGroup explotions;
+
         public List<DefenceBlock> defenceBlockList;
 
 		private Graphics graphics;
@@ -65,10 +67,10 @@ namespace SpaceInvaders_WPF.Code
 
 			//HandelEnemys();
 			enemys.UpdatePositions();
-			
+
 
 			//HandelCollistions();
-
+			player.ShotCollitions(enemys.UnitList);
 			
 		}
 
@@ -275,11 +277,13 @@ namespace SpaceInvaders_WPF.Code
 			//}
 
 		}
-
+		
 
 
 	}
 
-
 	
+
+
+
 }

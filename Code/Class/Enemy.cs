@@ -11,6 +11,8 @@ namespace SpaceInvaders_WPF.Code.Class
 {
 	internal class Enemy
 	{
+		public double Index;
+
 		//public enum enemyType;
 
 		public double Height;
@@ -24,6 +26,7 @@ namespace SpaceInvaders_WPF.Code.Class
 		public WeaponType Weapon;
 
 		public bool isMovingRight;
+		public bool isMovingUp;
 
 		public double LeftMomentum;
 		private int MaxLeftMomentum;
@@ -32,6 +35,7 @@ namespace SpaceInvaders_WPF.Code.Class
 		public double TopMomentum;
 		private int MaxTopMomentum;
 		private bool MaxTopMomentumHit;
+		private double TopMomentumDelay;
 
 		public List<Shot> ShotsList;
 
@@ -47,8 +51,9 @@ namespace SpaceInvaders_WPF.Code.Class
 
 		public RotateTransform Rotation;
 
-		public Enemy(double Left, double Top) 
+		public Enemy(double Index, double Left, double Top) 
 		{
+			this.Index = Index;
 			this.Left = Left;
 			this.Top = Top;
 
@@ -56,6 +61,7 @@ namespace SpaceInvaders_WPF.Code.Class
 			Width = 30;
 
 			isMovingRight = true;
+			isMovingUp = true;
 
 			LeftMomentum = 0;
 			MaxLeftMomentum = 10;
@@ -64,6 +70,7 @@ namespace SpaceInvaders_WPF.Code.Class
 			TopMomentum = 0;
 			MaxTopMomentum = 5;
 			MaxTopMomentumHit = false;
+			TopMomentumDelay = 0;
 
 			Weapon = new WeaponType();
 
@@ -81,22 +88,25 @@ namespace SpaceInvaders_WPF.Code.Class
 
 		}
 
-		//public bool CheckPositionIsFree(double preposedLeft,double preposedTop, List<Enemy>UnitList)
-		//{
-			
-		//	return true;
-		//}
-
 
 		public void UpdateData(List<Enemy> UnitList)
 		{
 			UpdateIsMovingBool();
 			UpdateLeftMomentum();
 			UpdateLeftPosition();
+			
+			//UpdateTopMomentum();
+			//UpdateTopPosition();
+
 			CheckForSquadCollitions(UnitList);
+			
 			CheckBounderies();
+			
 			UpdateRotation();
 		}
+
+
+
 		public void UpdateIsMovingBool()
 		{
 			if (!isMoving) { moveDelayCount++; }
@@ -107,8 +117,6 @@ namespace SpaceInvaders_WPF.Code.Class
 
 				isMoving = true;
 
-				//if (CheckPositionIsFree(GetPreposedLeft(), 100, UnitList)) { isMoving = true; }
-				//else { if (isMovingRight) { isMovingRight = false; } else { isMovingRight = true; }  }
 			}
 
 			
@@ -133,6 +141,81 @@ namespace SpaceInvaders_WPF.Code.Class
 
 		}
 
+		private void UpdateLeftPosition() { Left = GetPreposedLeft(); }
+
+	
+
+		private void UpdateTopMomentum()
+		{
+			if (isMoving && isMovingUp) { TopMomentum--; }
+			if (isMoving && !isMovingUp) { TopMomentum++; }
+			if (TopMomentum == -MaxTopMomentum){ MaxTopMomentumHit = true; TopMomentum = 0; isMovingUp = false; }
+			if (TopMomentum == MaxTopMomentum) { MaxTopMomentumHit = true; TopMomentum = 0; isMovingUp = true; }
+			
+		}
+		private void UpdateTopPosition() 
+		{
+			if (isMoving) { Top = Top + (Speed * TopMomentum); }
+			
+		}
+
+		private void CheckForSquadCollitions(List<Enemy> UnitList)
+		{
+			for( int shipNumber = UnitList.Count - 1; shipNumber >= 0; shipNumber -- )
+			{
+				//if (Left == UnitList[shipNumber].Left && Top == UnitList[shipNumber].Top){ break; }
+				//if (this == UnitList[shipNumber]){ break; }
+
+				if (    
+						Index != UnitList[ shipNumber ].Index &&
+						isMovingRight &&
+						Top > UnitList[shipNumber].Top - UnitList[shipNumber].Height &&
+			     		Top < UnitList[shipNumber].Top + UnitList[shipNumber].Height &&
+						Left > UnitList[shipNumber].Left - UnitList[shipNumber].Width &&
+						Left < UnitList[shipNumber].Left + UnitList[shipNumber].Width 
+					)
+				{
+						isMoving = false;
+						LeftMomentum = 0;
+						isMovingRight = false;
+						moveDelayCount = moveDelay - 2;
+
+						UnitList[shipNumber].isMoving = false;
+						UnitList[shipNumber].LeftMomentum = 0;
+						UnitList[shipNumber].isMovingRight = true;
+						UnitList[shipNumber].moveDelayCount = UnitList[shipNumber].moveDelay - 2;
+
+						
+						Left = UnitList[shipNumber].Left - Width - 1;
+
+				}
+				else if
+					(
+						Index != UnitList[shipNumber].Index &&
+						!isMovingRight &&
+						Top > UnitList[shipNumber].Top - UnitList[shipNumber].Height &&
+						Top < UnitList[shipNumber].Top + UnitList[shipNumber].Height &&
+						Left > UnitList[shipNumber].Left - UnitList[shipNumber].Width &&
+						Left < UnitList[shipNumber].Left + UnitList[shipNumber].Width
+					)
+				{
+
+					isMoving = false;
+					LeftMomentum = 0;
+					isMovingRight = true;
+					moveDelayCount = moveDelay - 2;
+
+					UnitList[shipNumber].isMoving = false;
+					UnitList[shipNumber].LeftMomentum = 0;
+					UnitList[shipNumber].isMovingRight = false;
+					UnitList[shipNumber].moveDelayCount = UnitList[shipNumber].moveDelay - 2;
+
+					Left = UnitList[shipNumber].Left + Width + 1;
+				}
+
+			}
+		}
+		
 		private void CheckBounderies()
 		{
 			if (Left <= 25  ) { Left = 25;  }
@@ -145,62 +228,9 @@ namespace SpaceInvaders_WPF.Code.Class
 			//if ( Left >= 710){  isMovingRight = false; MaxLeftMomentumHit = false; }
 		}
 
-		private void CheckForSquadCollitions(List<Enemy> UnitList)
-		{
-			for( int shipNumber = UnitList.Count - 1; shipNumber >= 0; shipNumber -- )
-			{
-				//if (Left == UnitList[shipNumber].Left && Top == UnitList[shipNumber].Top){ break; }
-				if (UnitList[shipNumber] == this)
-				{ break; }
-
-				if (
-						isMovingRight &&
-						Top > UnitList[shipNumber].Top - UnitList[shipNumber].Height &&
-			     		Top < UnitList[shipNumber].Top + UnitList[shipNumber].Height &&
-						Left > UnitList[shipNumber].Left - UnitList[shipNumber].Width &&
-						Left < UnitList[shipNumber].Left + UnitList[shipNumber].Width 
-					)
-				{
-						isMoving = false;
-						LeftMomentum = 0;
-						isMovingRight = false;
-						moveDelayCount = moveDelay - 1;
-
-						UnitList[shipNumber].isMoving = false;
-						UnitList[shipNumber].LeftMomentum = 0;
-						UnitList[shipNumber].isMovingRight = true;
-						UnitList[shipNumber].moveDelayCount = UnitList[shipNumber].moveDelay - 1;
-
-						//if (UnitList[shipNumber].Left > 710) { UnitList[shipNumber].Left = 710; }
-						Left = UnitList[shipNumber].Left - Width - 1;
-
-				}
-				else if
-					(
-						!isMovingRight &&
-						Top > UnitList[shipNumber].Top - UnitList[shipNumber].Height &&
-						Top < UnitList[shipNumber].Top + UnitList[shipNumber].Height &&
-						Left > UnitList[shipNumber].Left - UnitList[shipNumber].Width &&
-						Left < UnitList[shipNumber].Left + UnitList[shipNumber].Width
-					)
-				{
-					
-						isMoving = false;
-						LeftMomentum = 0;
-						isMovingRight = true;
-						moveDelayCount = moveDelay - 1;
-
-						UnitList[shipNumber].isMoving = false;
-						UnitList[shipNumber].LeftMomentum = 0;
-						UnitList[shipNumber].isMovingRight = false;
-						UnitList[shipNumber].moveDelayCount = UnitList[shipNumber].moveDelay - 1;
-					
-						Left = UnitList[shipNumber].Left + Width + 1;
-				}
-
-			}
-		}
-
+		
+		
+		
 		public double GetPreposedLeft()
 		{
 			double preposedPosition = Left; 
@@ -217,9 +247,7 @@ namespace SpaceInvaders_WPF.Code.Class
 
 			return preposedPosition;
 		}
-
-		private void UpdateLeftPosition() { if (isMoving) { Left = GetPreposedLeft(); } }
-
+		
 		private void UpdateRotation() { Rotation.Angle = LeftMomentum * 3; }
 
 

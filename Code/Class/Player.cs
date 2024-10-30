@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -134,6 +135,22 @@ namespace SpaceInvaders_WPF.Code.Class
 			//display.Children.OfType<Rectangle>().First(x => x.Tag == "player").RenderTransform = playerRotation;
 
 		}
+		public void ShotCollitions(List<Enemy> enenyShips)
+		{
+			for (int i = shotList.Count - 1; i >= 0; i--)
+			{
+				for (int e = enenyShips.Count - 1; e >= 0; e--)
+				{
+					Rect shot = new Rect(shotList[i].Left, shotList[i].Top, shotList[i].Width, shotList[i].Height);
+					Rect target = new Rect(enenyShips[e].Left, enenyShips[e].Top, enenyShips[e].Width, enenyShips[e].Height);
 
+					if (shot.IntersectsWith(target))
+					{
+						shotList.RemoveAt(i);
+						enenyShips.RemoveAt(e);
+					}
+				}
+			}
+		}
 	}
 }
