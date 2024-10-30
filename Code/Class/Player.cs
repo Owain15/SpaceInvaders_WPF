@@ -67,6 +67,13 @@ namespace SpaceInvaders_WPF.Code.Class
 			foreach (Shot shot in shotList) 
 			{
 				shot.UpdatePosition();
+
+			}
+			for( int i =shotList.Count-1; i>= 0; i--)
+			{
+				if(shotList[i].Top < -shotList[i].Height) 
+				{ shotList.Remove(shotList[i]); }
+			
 			}
 		}
 

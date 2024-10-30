@@ -24,17 +24,24 @@ namespace SpaceInvaders_WPF.Code.Class
 		
 		public double TopMomentum;
 
-		//RotateTransform Rotation = new RotateTransform();
+		public RotateTransform Rotation = new RotateTransform();
 
 		public Shot(Player ship)
 		{
-			Height = 5;
+			Height = 10;
 			Width = 3;
+			
+			Rotation = new RotateTransform();
 
+			Rotation.Angle = ship.Rotation.Angle;
+			
 			Left = ship.Left+(ship.Width/2);
 			Top = ship.Top-(Height);
 
 			TopMomentum = 15;
+
+			LeftMomentum = (Rotation.Angle / 3);
+			
 		}
 
 		//change to move shot. add x and y volocatys.
@@ -42,6 +49,7 @@ namespace SpaceInvaders_WPF.Code.Class
 		public void UpdatePosition()
 		{
 			Top = Top - TopMomentum;
+			Left = Left + LeftMomentum;
 		}
 		
 		private void MovePlayerShots()

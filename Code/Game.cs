@@ -26,15 +26,11 @@ namespace SpaceInvaders_WPF.Code
 
 		public Inputs input;
 
-		public List<Enemy> enemyList;
+		public EnemyGroup enemys;
 
         public List<DefenceBlock> defenceBlockList;
 
-		//int refreshRate = 20;
-		
-        //DispatcherTimer gameTimer = new DispatcherTimer();
 
-		
         
         public Game( Inputs input)
         { 
@@ -44,78 +40,43 @@ namespace SpaceInvaders_WPF.Code
 
             player = new Player();
 
-            enemyList = new List<Enemy>();
+            enemys = new EnemyGroup();
 
             defenceBlockList = new List<DefenceBlock>();
 
 
-			//InializTimmer();
 
         }
 
-		//private void InializTimmer()
-		//{
-		//	gameTimer.Tick += GameLoop;
-		//	gameTimer.Interval = TimeSpan.FromMilliseconds(refreshRate);
-		//}
+		
 
-		////public void Start()
-  ////      {
-		////	//leftDown = false;
-		////	//rightDown = false;
-		////	//spaceDown = false;
 
-		////	//readyToShoot = true;
-		////	//Rectangle playerDisplay = new Rectangle(player.Length,player.Height);
-		////	Rectangle playerDisplay = new Rectangle
-		////	{
-
-		////		Width = player.Width,
-		////		Height = player.Height,
-				
-		////		Fill = Brushes.Aqua
-
-			
-
-		////	};
-		////	//display.Children.Add(playerDisplay);
-
-		////	Canvas.SetLeft(playerDisplay, player.Left);
-		////	Canvas.SetTop(playerDisplay, player.Top);
-
-		////	//gameTimer.Start();
-		////}
-
-  ////      public void Pause()
-  ////      { 
-  ////          //gameTimer += RunPauseEvent;
-  ////      }
-
-  ////      public void Stop()
-  ////      {
-
-  ////      }
+		
 
 		private void UpdateGameState()
 		{
-			
-			player.UpdateData(input);
-			player.UpdateShotData();
-			
-			//HandelEnemys();
 
+			//HandelPlayer()
+			player.UpdateData(input);
+			
 			//HandelPlayerShots();
+			player.UpdateShotData();
+
+			//HandelEnemys();
+			enemys.UpdatePositions();
+			
 
 			//HandelCollistions();
 
-			//testLabel.Content = "player Momentum: " + playerMomentum + ".";
+			
 		}
 
 		public Canvas RunGameLoopReturnNextCanvas(Canvas display)
 		{
-			UpdateGameState();
-
+			
 			display.Children.Clear();
+
+			UpdateGameState();
 
 			display = RenderCanvas(display);
 
@@ -126,6 +87,7 @@ namespace SpaceInvaders_WPF.Code
 
 			RenderPlayer(display);
 			RenderPlayerShots(display);
+			RenderEnemys(display);
 
 			return display;
 		
@@ -151,7 +113,31 @@ namespace SpaceInvaders_WPF.Code
 			ship.RenderTransform = player.Rotation;
 		
 		}
+		private void RenderEnemys(Canvas display)
+		{
+			foreach (Enemy enemy in enemys.UnitList)
+			{ 
+				Rectangle ship = new Rectangle
+				{
+					Height = enemy.Height,
+					Width = enemy.Width,
+					Fill = Brushes.Red
+				};
 
+				display.Children.Add(ship);
+
+				Canvas.SetLeft(ship, enemy.Left);
+				Canvas.SetTop(ship, enemy.Top);
+
+
+				////Rotation.CenterX = ship.Width / 2;
+				////Rotation.CenterY = ship.Height;
+				ship.RenderTransform = enemy.Rotation;
+			
+			}
+		
+
+		}
 		private void RenderPlayerShots(Canvas display)
 		{
 			foreach(Shot shot in player.shotList)
@@ -165,6 +151,8 @@ namespace SpaceInvaders_WPF.Code
 
 				display.Children.Add(shotBox);
 
+				shotBox.RenderTransform = shot.Rotation;
+				
 				Canvas.SetLeft(shotBox, shot.Left);
 				Canvas.SetTop(shotBox, shot.Top);
 			}
