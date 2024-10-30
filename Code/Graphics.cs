@@ -18,7 +18,10 @@ namespace SpaceInvaders_WPF.Code
 
 		//RotateTransform Rotation = new RotateTransform();
 
-		public Graphics() { }
+		public Graphics() 
+		{ 
+		 backgroundImage.ImageSource = new BitmapImage(new Uri("C:\\Users\\ojdav\\visual studio files\\WPF\\Projects\\SpaceInvaders_WPF\\res\\background.png"));
+		}
 
 		private void UpdatePlayerImage()
 		{

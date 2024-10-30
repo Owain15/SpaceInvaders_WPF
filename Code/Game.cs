@@ -30,6 +30,7 @@ namespace SpaceInvaders_WPF.Code
 
         public List<DefenceBlock> defenceBlockList;
 
+		private Graphics graphics;
 
         
         public Game( Inputs input)
@@ -44,7 +45,7 @@ namespace SpaceInvaders_WPF.Code
 
             defenceBlockList = new List<DefenceBlock>();
 
-
+			graphics = new Graphics();
 
         }
 
@@ -84,15 +85,29 @@ namespace SpaceInvaders_WPF.Code
 		}
 		private Canvas RenderCanvas(Canvas display) 
 		{
-
+			RenderBackground(display);
 			RenderPlayer(display);
 			RenderPlayerShots(display);
 			RenderEnemys(display);
+			
 
 			return display;
 		
 		}
 		
+		private void RenderBackground(Canvas display)
+		{
+			Rectangle background = new Rectangle
+			{
+				
+				Height = 450,
+				Width = 800,
+				Fill = graphics.backgroundImage
+			};
+
+			display.Children.Add(background);
+
+		}
 		private void RenderPlayer(Canvas display)
 		{
 			Rectangle ship = new Rectangle
